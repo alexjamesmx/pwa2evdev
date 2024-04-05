@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useRoutes, BrowserRouter, Navigate } from "react-router-dom"; // Import Navigate for conditional redirection
 import Home from "./pages/Home";
-import Perfil from "./pages/Perfil";
+import Perfil from "./pages/Perfi";
 import "./App.css";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
@@ -11,13 +11,18 @@ import CustomNavbar from "./components/CustomNavbar";
 import { UserProvider, UserContext } from "./customHooks/UserContext";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import EditarPerfil from "./pages/EditarPerfil";
 
 const AppRoutes = ({ isUserLoggedIn }) => {
   return useRoutes([
     {
-      path: "/perfil",
-      element: isUserLoggedIn ? <Perfil /> : <Navigate to="/login" />,
+      path: "/profile",
+      element: isUserLoggedIn ? <Perfil /> : <Login />,
     }, // Redirect to login if not logged in
+    {
+      path: "/editProfile",
+      element: <EditarPerfil />,
+    },
     {
       path: "/login",
       element: isUserLoggedIn ? <Navigate to="/" /> : <Login />,

@@ -17,7 +17,7 @@ function CustomNavbar() {
   };
 
   return (
-    <Navbar expand="xxl" className="bg-body-tertiary navbar-custom">
+    <Navbar expand="xxl" className="navbar-custom bg-pinterest">
       <Container>
         <Navbar.Brand href="/" className="brand-custom">
           <img
@@ -25,6 +25,7 @@ function CustomNavbar() {
             alt="Pinterest'nt logo"
             width="50"
             height="50"
+            onClick={(e) => e.preventDefault()}
           />
           &nbsp;
           <Button
@@ -51,7 +52,7 @@ function CustomNavbar() {
           <Nav>
             {isUserLoggedIn ? (
               <>
-                <Nav.Link href="#profile" className="nav-link-custom">
+                <Nav.Link href="/profile" className="nav-link-custom">
                   <img
                     src={user?.photoURL || "path/to/default-photo.jpg"}
                     alt="Profile"

@@ -4,7 +4,8 @@ import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Modal from "react-bootstrap/Modal";
 import Row from "react-bootstrap/Row";
-import { ArrowBarLeft } from "react-bootstrap-icons";
+import { BookmarkHeart, BookmarkHeartFill } from "react-bootstrap-icons";
+import "./ImageDetails.css";
 import {
   collection,
   doc,
@@ -16,6 +17,7 @@ import {
   getDoc,
 } from "firebase/firestore";
 import { UserContext } from "../customHooks/UserContext";
+import { CloseButton, Form } from "react-bootstrap";
 
 function ImageDetails({ srcImage, show, onHide }) {
   const { user } = useContext(UserContext);
@@ -27,7 +29,6 @@ function ImageDetails({ srcImage, show, onHide }) {
         const db = getFirestore();
         const userId = user.uid;
         const imagesRef = doc(collection(db, "images"), userId);
-        console.log("imagesRef", imagesRef);
         const docSnapshot = await getDoc(imagesRef);
 
         if (docSnapshot.exists()) {
@@ -53,6 +54,7 @@ function ImageDetails({ srcImage, show, onHide }) {
 
       if (isSaved) {
         // Remove the image URL from "saved" category
+        console.log("Removing image from saved", srcImage);
         await updateDoc(doc(imagesRef, userId), {
           saved: arrayRemove(srcImage),
         });
@@ -78,21 +80,20 @@ function ImageDetails({ srcImage, show, onHide }) {
         onHide={onHide}
         aria-labelledby="contained-modal-title-vcenter"
         centered
+        className="w-100 h-100"
       >
         <Modal.Body className="grid-example">
           <Container>
-            <Row>
-              <Col xs={12} md={8}>
+            <CloseButton className="ml-4 mb-3" onClick={onHide} />
+
+            <Row className="w-100">
+              <Col xs={9}>
                 {srcImage ? (
-                  <div className="image-wrapper">
-                    <Button variant="secondary" onClick={onHide}>
-                      <ArrowBarLeft className="ml-4" />
-                    </Button>
-                    <br />
+                  <div className="image-wrapper-selected mb-3">
                     <img
                       src={srcImage}
                       alt={`Imagen`}
-                      className="image"
+                      className="image-selected w-100"
                       download="image.jpg" // Add this line
                     />
                   </div>
@@ -100,22 +101,17 @@ function ImageDetails({ srcImage, show, onHide }) {
                   "cargando imagen "
                 )}
               </Col>
-              <Col xs={6} md={4}>
-                {
-                  <h3>
-                    {isSaved ? (
-                      <Button variant="danger" onClick={toggleSave}>
-                        Remove from saved
-                      </Button>
-                    ) : (
-                      <Button variant="primary" onClick={toggleSave}>
-                        Save
-                      </Button>
-                    )}
-                  </h3>
-                }
 
-                <br />
+              <Col xs={3}>
+                {isSaved ? (
+                  <BookmarkHeartFill onClick={toggleSave} className="red h2" />
+                ) : (
+                  <BookmarkHeart onClick={toggleSave} className="h2" />
+                )}
+                <Form.Select aria-label="Default select example">
+                  <option>Add to library</option>
+                  <option value="1">s</option>
+                </Form.Select>{" "}
               </Col>
             </Row>
           </Container>

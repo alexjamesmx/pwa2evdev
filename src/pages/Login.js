@@ -33,10 +33,8 @@ function Login() {
 
       // Save user data in Firestore (assuming a "users" collection)
       const db = getFirestore();
-      console.log("User:", user.uid);
       const usersRef = collection(db, "users"); // Adjust path based on your Firestore structure
       await setDoc(doc(usersRef, user.uid), firestoreUser); // Use user.uid as the document path
-      console.log("User document written with ID:", user.uid);
       navigate("/");
     } catch (error) {
       console.error(error);
@@ -46,9 +44,18 @@ function Login() {
   return (
     <div className="login-container">
       <div className="login-content">
-        <h2 className="text-center text-white fw-bold h2">Login</h2>
-        <Button onClick={logGoogleUser}>
-          <img src={googleIcon} alt="Google icon" width={50} height={50} />
+        <h2 className="text-center text-white fw-bold mb-5">Login</h2>
+        <Button
+          onClick={logGoogleUser}
+          className="rounded-5 bg-white p-3 fw-bold fs-5 text-black"
+        >
+          <img
+            src={googleIcon}
+            alt="Google icon"
+            width={50}
+            height={50}
+            className="me-4"
+          />
           Sign In With Google
         </Button>
       </div>

@@ -3,7 +3,6 @@ import ImageDetails from "./ImageDetails";
 import { toast } from "react-toastify";
 import { UserContext } from "../customHooks/UserContext";
 function ListImages({ images }) {
-  console.log("images: ", images);
   const { user } = useContext(UserContext);
 
   const [modalShow, setModalShow] = useState(false);
@@ -16,7 +15,6 @@ function ListImages({ images }) {
   };
 
   const handleUnregisteredUsers = () => {
-    console.log(user);
     if (!user) {
       toast.error("Debes iniciar sesión para ver los detalles de la imagen");
       return false;
@@ -40,11 +38,11 @@ function ListImages({ images }) {
         <p>Cargando imágenes...</p>
       )}
 
-      <ImageDetails
+      {/* <ImageDetails
         show={modalShow}
         onHide={() => setModalShow(false)}
         srcImage={srcImage}
-      />
+      /> */}
     </>
   );
 }

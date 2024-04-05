@@ -34,7 +34,7 @@ const Home = () => {
                 <i className="material-icons">menu</i>
             </button> */}
       <div className="image-container">
-        <ListImages images={images} />
+        {/* <ListImages images={images} /> */}
       </div>
     </div>
   );
