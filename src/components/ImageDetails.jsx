@@ -1,5 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
-import Button from "react-bootstrap/Button";
+import React, { useContext, useState, useEffect, useMemo, memo } from "react";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Modal from "react-bootstrap/Modal";
@@ -18,7 +17,7 @@ import {
 import { UserContext } from "../customHooks/UserContext";
 import { CloseButton, Form } from "react-bootstrap";
 
-function ImageDetails({ id, srcImage, show, onHide }) {
+const ImageDetails = memo(({ id, srcImage, show, onHide }) => {
   const { user } = useContext(UserContext);
   const [isSaved, setIsSaved] = useState(false);
 
@@ -26,12 +25,10 @@ function ImageDetails({ id, srcImage, show, onHide }) {
     const checkSavedStatus = async () => {
       try {
         if (!user || !id) return;
-
         const db = getFirestore();
         const userId = user.uid;
         const imagesRef = doc(collection(db, "images"), userId);
         const docSnapshot = await getDoc(imagesRef);
-
         if (docSnapshot.exists()) {
           const data = docSnapshot.data();
           const savedData = data.saved || [];
@@ -42,35 +39,31 @@ function ImageDetails({ id, srcImage, show, onHide }) {
         console.error("Error checking saved status:", error);
       }
     };
-
     checkSavedStatus();
   }, [user, id]);
 
-  const toggleSave = async () => {
-    try {
-      if (!user || !id || !srcImage) return;
-
-      const db = getFirestore();
-      const userId = user.uid;
-      const imagesRef = doc(collection(db, "images"), userId);
-      const docSnapshot = await getDoc(imagesRef);
-      const savedData = docSnapshot.exists()
-        ? docSnapshot.data().saved || []
-        : [];
-
-      const imageData = { url: srcImage, id };
-
-      if (isSaved) {
-        await updateDoc(imagesRef, { saved: arrayRemove(imageData) });
-        setIsSaved(false);
-      } else {
-        await updateDoc(imagesRef, { saved: arrayUnion(imageData) });
-        setIsSaved(true);
-      }
-    } catch (error) {
-      console.error("Error toggling save:", error);
-    }
-  };
+  const toggleSave = useMemo(
+    () =>
+      async () => {
+        try {
+          if (!user || !id || !srcImage) return;
+          const db = getFirestore();
+          const userId = user.uid;
+          const imagesRef = doc(collection(db, "images"), userId);
+          const imageData = { url: srcImage, id };
+          if (isSaved) {
+            await updateDoc(imagesRef, { saved: arrayRemove(imageData) });
+            setIsSaved(false);
+          } else {
+            await updateDoc(imagesRef, { saved: arrayUnion(imageData) });
+            setIsSaved(true);
+          }
+        } catch (error) {
+          console.error("Error toggling save:", error);
+        }
+      },
+    [user, id, srcImage, isSaved]
+  );
 
   return (
     <Modal
@@ -87,7 +80,7 @@ function ImageDetails({ id, srcImage, show, onHide }) {
             <Col xs={9}>
               {srcImage && id ? (
                 <div className="image-wrapper">
-                  <img src={srcImage} alt="Image" className="image" />
+                  <img src={srcImage} className="image" alt="Image Details" />
                 </div>
               ) : (
                 <p>Loading image...</p>
@@ -95,17 +88,11 @@ function ImageDetails({ id, srcImage, show, onHide }) {
             </Col>
             <Col xs={3}>
               {isSaved ? (
-                <BookmarkHeartFill
-                  onClick={toggleSave}
-                  className="bookmark-icon"
-                />
+                <BookmarkHeartFill onClick={toggleSave} className="bookmark-icon" />
               ) : (
                 <BookmarkHeart onClick={toggleSave} className="bookmark-icon" />
               )}
-              <Form.Select
-                aria-label="Add to library"
-                className="select-library"
-              >
+              <Form.Select aria-label="Add to library" className="select-library">
                 <option>Add to library</option>
                 {/* Add library options here */}
               </Form.Select>
@@ -115,6 +102,6 @@ function ImageDetails({ id, srcImage, show, onHide }) {
       </Modal.Body>
     </Modal>
   );
-}
+});
 
 export default ImageDetails;

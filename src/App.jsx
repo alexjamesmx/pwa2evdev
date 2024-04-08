@@ -1,59 +1,61 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { lazy, Suspense, useState, useEffect } from "react";
 import {
   useRoutes,
   BrowserRouter,
   Navigate,
   useSearchParams,
 } from "react-router-dom";
-import Home from "./pages/Home";
-import Perfil from "./pages/Perfi";
-import "./App.css";
-import Login from "./pages/Login";
-import NotFound from "./pages/NotFound";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
 import CustomNavbar from "./components/CustomNavbar";
-import { UserProvider, UserContext } from "./customHooks/UserContext";
+import { UserProvider } from "./customHooks/UserContext";
 import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import EditarPerfil from "./pages/EditarPerfil";
-import "@fontsource/roboto/300.css";
-import "@fontsource/roboto/400.css";
+import "react-toastify/dist/ReactToastify.min.css";
+import "@fontsource/roboto/400.css"; // Import only the necessary font weights
 import "@fontsource/roboto/500.css";
-import "@fontsource/roboto/700.css";
-import CategoryView from "./pages/CategoryView";
 
-const AppRoutes = ({ isUserLoggedIn }) => {
+const Home = lazy(() => import("./pages/Home"));
+const Perfil = lazy(() => import("./pages/Perfi"));
+const Login = lazy(() => import("./pages/Login"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const EditarPerfil = lazy(() => import("./pages/EditarPerfil"));
+const CategoryView = lazy(() => import("./pages/CategoryView"));
+
+const AppRoutes = React.memo(({ isUserLoggedIn }) => {
   const [searchParams] = useSearchParams();
-
   const category = searchParams.get("category");
 
   return useRoutes([
     {
       path: "/profile",
       element: isUserLoggedIn ? <Perfil /> : <Login />,
-    }, // Redirect to login if not logged in
+    },
     {
       path: "/editProfile",
       element: <EditarPerfil />,
     },
     {
       path: "/library",
-      element:
-        isUserLoggedIn && category ? (
-          <CategoryView categorySelected={category} />
-        ) : (
-          <Login />
-        ),
+      element: isUserLoggedIn && category ? (
+        <CategoryView categorySelected={category} />
+      ) : (
+        <Login />
+      ),
     },
     {
       path: "/login",
       element: isUserLoggedIn ? <Navigate to="/" /> : <Login />,
-    }, // Redirect to home if already logged in
-    { path: "/", element: <Home /> },
-    { path: "*", element: <NotFound /> },
+    },
+    {
+      path: "/",
+      element: <Home />,
+    },
+    {
+      path: "*",
+      element: <NotFound />,
+    },
   ]);
-};
+});
 
 const App = () => {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
@@ -62,7 +64,6 @@ const App = () => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setIsUserLoggedIn(currentUser ? true : false);
     });
-
     return unsubscribe;
   }, []);
 
@@ -72,7 +73,9 @@ const App = () => {
         <UserProvider>
           <ToastContainer />
           <CustomNavbar isUserLoggedIn={isUserLoggedIn} />
-          <AppRoutes isUserLoggedIn={isUserLoggedIn} />
+          <Suspense fallback={<div>Loading...</div>}>
+            <AppRoutes isUserLoggedIn={isUserLoggedIn} />
+          </Suspense>
         </UserProvider>
       </BrowserRouter>
     </div>

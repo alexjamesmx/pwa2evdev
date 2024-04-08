@@ -1,14 +1,15 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, memo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { collection, doc, getFirestore, getDoc } from "firebase/firestore";
 import { UserContext } from "../customHooks/UserContext";
-
+import { CategoryContext } from "../pages/Perfi";
 import "./UserLibrary.css";
 
-function UserLibrary({ categorySelected }) {
-  const [categories, setCategories] = useState([]);
+const UserLibrary = memo(() => {
   const { user } = useContext(UserContext);
+  const { showCategory } = useContext(CategoryContext);
   const navigate = useNavigate();
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     const getFavorites = async () => {
@@ -19,26 +20,26 @@ function UserLibrary({ categorySelected }) {
         const docSnapshot = await getDoc(imagesRef);
         if (docSnapshot.exists()) {
           const userData = docSnapshot.data();
-          const selectedCategoryData = userData[categorySelected] || [];
+          const selectedCategoryData = userData[showCategory] || [];
           setCategories([
-            { category: categorySelected, images: selectedCategoryData },
+            { category: showCategory, images: selectedCategoryData },
           ]);
         }
       } catch (error) {
         console.error("Error checking saved status", error);
       }
     };
-
     getFavorites();
-  }, [categorySelected, user]);
+  }, [showCategory, user]);
 
-  const displayLibrary = () => {
-    navigate(`/library?category=${categorySelected}`);
-  };
-  console.log("aqui ", categories[0].images);
+  const displayLibrary = useMemo(
+    () => () => navigate(`/library?category=${showCategory}`),
+    [navigate, showCategory]
+  );
+
   return (
     <div className="library-preview-card" onClick={displayLibrary}>
-      {categories[0].images.length === 0 ? (
+      {categories[0]?.images.length === 0 ? (
         <div className="d-flex justify-content-center">
           <p>Nothing to show...yet! Create your first libraries.</p>
         </div>
@@ -57,6 +58,6 @@ function UserLibrary({ categorySelected }) {
       )}
     </div>
   );
-}
+});
 
 export default UserLibrary;

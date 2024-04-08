@@ -3,6 +3,8 @@ import ImageDetails from "./ImageDetails";
 import { toast } from "react-toastify";
 import { UserContext } from "../customHooks/UserContext";
 import "./UserLibrary.css";
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+
 
 function ListImages({ images }) {
   const { user } = useContext(UserContext);
@@ -30,7 +32,7 @@ function ListImages({ images }) {
       {images.length > 0 ? (
         images.map((image, index) => (
           <div key={index} className="image-wrapper">
-            <img
+            <LazyLoadImage
               loading="lazy"
               src={image.urls.regular}
               alt={image.alt_description || "Image from Unsplash"}
