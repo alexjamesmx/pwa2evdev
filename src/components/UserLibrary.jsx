@@ -35,10 +35,10 @@ function UserLibrary({ categorySelected }) {
   const displayLibrary = () => {
     navigate(`/library?category=${categorySelected}`);
   };
-
+  console.log("aqui ", categories[0].images);
   return (
     <div className="library-preview-card" onClick={displayLibrary}>
-      {categories.length === 0 ? (
+      {categories[0].images.length === 0 ? (
         <div className="d-flex justify-content-center">
           <p>Nothing to show...yet! Create your first libraries.</p>
         </div>

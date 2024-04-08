@@ -34,7 +34,7 @@ const Perfil = () => {
           <div className="perfil-section">
             <h3>{user.displayName}</h3>
             <Button
-              className="mt-2 rounded-4 p-2 fs-6 text-white border-white fw-bold"
+              className="mt-2 rounded-4 p-2 fs-6 fw-bold"
               variant="secondary"
               onClick={handleEditProfile}
             >
