@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useContext } from "react";
+import { Link, useLocation } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
@@ -6,36 +7,43 @@ import Form from "react-bootstrap/Form";
 import { UserContext } from "../customHooks/UserContext";
 import { auth } from "../firebase";
 import pinterestLogo from "../assets/logos/pinterest.png";
-import { Button } from "react-bootstrap";
+import "./CustomNavbar.css";
+
 function CustomNavbar() {
   const { user, isUserLoggedIn, setIsUserLoggedIn } = useContext(UserContext);
+  const location = useLocation();
 
   const logout = () => {
-    console.log("logout: cerrando sesion");
     auth.signOut();
     setIsUserLoggedIn(false);
+  };
+
+  const isActive = (path) => {
+    return location.pathname === path;
   };
 
   return (
     <Navbar expand="xxl" className="navbar-custom bg-pinterest">
       <Container>
-        <Navbar.Brand href="/" className="brand-custom">
-          <img
-            src={pinterestLogo} // Use the imported logo image
-            alt="Pinterest'nt logo"
-            width="50"
-            height="50"
-            onClick={(e) => e.preventDefault()}
-          />
-          &nbsp;
-          <Button
-            href="/"
-            onClick={(e) => e.preventDefault()}
-            className="bg-black rounded-5 p-3 fw-bold"
+        <Nav>
+          <Link as={Link} to="/" className="me-2">
+            <img
+              src={pinterestLogo}
+              alt="Pinterest logo"
+              width="50"
+              height="50"
+            />
+          </Link>
+          <Link
+            as={Link}
+            to="/"
+            className={`rounded-5 p-3 fw-bold me-2 text-dark  text-decoration-none ${
+              isActive("/") ? "customaActive" : ""
+            }`}
           >
             Home
-          </Button>
-        </Navbar.Brand>
+          </Link>
+        </Nav>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse
           id="basic-navbar-nav"
@@ -52,18 +60,23 @@ function CustomNavbar() {
           <Nav>
             {isUserLoggedIn ? (
               <>
-                <Nav.Link href="/profile" className="nav-link-custom">
+                <Nav.Link as={Link} to="/profile" className="nav-link-custom">
                   <img
                     src={user?.photoURL || "path/to/default-photo.jpg"}
                     alt="Profile"
                     width="50"
                     height="50"
-                    className="rounded-circle"
+                    className={`rounded-circle ${
+                      isActive("/profile") ? "profileActive" : ""
+                    }`}
                   />
                 </Nav.Link>
                 <Nav.Link
-                  href="/login"
-                  className="nav-link-custom"
+                  as={Link}
+                  to="/login"
+                  className={`nav-link-custom ${
+                    isActive("/login") ? "active" : ""
+                  }`}
                   onClick={logout}
                 >
                   logout
@@ -71,7 +84,13 @@ function CustomNavbar() {
               </>
             ) : (
               <>
-                <Nav.Link href="/login" className="nav-link-custom">
+                <Nav.Link
+                  as={Link}
+                  to="/login"
+                  className={`nav-link-custom ${
+                    isActive("/login") ? "active" : ""
+                  }`}
+                >
                   Login
                 </Nav.Link>
               </>

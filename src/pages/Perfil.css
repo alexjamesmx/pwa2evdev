@@ -1,6 +1,9 @@
-.perfil-container {
-    text-align: center;
-    font-family: Arial, sans-serif;
+.perfil-header {
+    justify-content: center;
+    display: flex;
+    flex-direction: row;
+}
+.perfil-library { 
 }
 
 .perfil-title {
@@ -12,12 +15,15 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    max-width: 488px;
+    width: 100%;
+    margin-top: 12px;
 }
 
 .perfil-photo {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
+    justify-content: center;
+    align-items: center;
+     border-radius: 50%;
     margin-bottom: 20px;
 }
 
@@ -43,4 +49,8 @@
 
 .login-button:hover {
     background-color: #0056b3;
+}
+
+.pointer{
+    cursor: pointer;
 }

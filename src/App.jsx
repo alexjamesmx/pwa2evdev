@@ -1,5 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useRoutes, BrowserRouter, Navigate } from "react-router-dom"; // Import Navigate for conditional redirection
+import {
+  useRoutes,
+  BrowserRouter,
+  Navigate,
+  useSearchParams,
+} from "react-router-dom";
 import Home from "./pages/Home";
 import Perfil from "./pages/Perfi";
 import "./App.css";
@@ -12,8 +17,17 @@ import { UserProvider, UserContext } from "./customHooks/UserContext";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import EditarPerfil from "./pages/EditarPerfil";
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
+import CategoryView from "./pages/CategoryView";
 
 const AppRoutes = ({ isUserLoggedIn }) => {
+  const [searchParams] = useSearchParams();
+
+  const category = searchParams.get("category");
+
   return useRoutes([
     {
       path: "/profile",
@@ -22,6 +36,15 @@ const AppRoutes = ({ isUserLoggedIn }) => {
     {
       path: "/editProfile",
       element: <EditarPerfil />,
+    },
+    {
+      path: "/library",
+      element:
+        isUserLoggedIn && category ? (
+          <CategoryView categorySelected={category} />
+        ) : (
+          <Login />
+        ),
     },
     {
       path: "/login",
@@ -44,7 +67,7 @@ const App = () => {
   }, []);
 
   return (
-    <div className="App">
+    <div>
       <BrowserRouter>
         <UserProvider>
           <ToastContainer />

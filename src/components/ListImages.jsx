@@ -2,47 +2,53 @@ import React, { useState, useContext } from "react";
 import ImageDetails from "./ImageDetails";
 import { toast } from "react-toastify";
 import { UserContext } from "../customHooks/UserContext";
+import "./UserLibrary.css";
+
 function ListImages({ images }) {
   const { user } = useContext(UserContext);
-
   const [modalShow, setModalShow] = useState(false);
+  const [imageId, setImageId] = useState(null);
   const [srcImage, setSrcImage] = useState(null);
 
-  const goToImageDetail = (src) => {
+  const goToImageDetail = (id, src) => {
     if (!handleUnregisteredUsers()) return;
+    setImageId(id);
     setSrcImage(src);
     setModalShow(true);
   };
 
   const handleUnregisteredUsers = () => {
     if (!user) {
-      toast.error("Debes iniciar sesión para ver los detalles de la imagen");
+      toast.error("You must sign in to view image details.");
       return false;
     }
     return true;
   };
+
   return (
     <>
       {images.length > 0 ? (
         images.map((image, index) => (
           <div key={index} className="image-wrapper">
             <img
+              loading="lazy"
               src={image.urls.regular}
-              alt={image.alt_description || "Imagen de Unsplash"}
+              alt={image.alt_description || "Image from Unsplash"}
               className="image"
-              onClick={() => goToImageDetail(image.urls.regular)}
+              onClick={() => goToImageDetail(image.id, image.urls.regular)}
             />
           </div>
         ))
       ) : (
-        <p>Cargando imágenes...</p>
+        <p>Loading images...</p>
       )}
 
-      {/* <ImageDetails
+      <ImageDetails
         show={modalShow}
         onHide={() => setModalShow(false)}
+        id={imageId}
         srcImage={srcImage}
-      /> */}
+      />
     </>
   );
 }
