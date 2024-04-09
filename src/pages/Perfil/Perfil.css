@@ -4,6 +4,9 @@
     flex-direction: row;
 }
 .perfil-library { 
+    justify-content: center;
+    display: flex;
+    flex-direction: row;
 }
 
 .perfil-title {

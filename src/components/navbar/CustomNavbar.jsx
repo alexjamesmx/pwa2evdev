@@ -1,89 +1,31 @@
-// import React, { useContext, memo } from "react";
-// import { Link, useLocation } from "react-router-dom";
-// import { UserContext } from "../../customHooks/UserContext";
-// import { auth } from "../../firebase";
-// import pinterestLogo from "../../assets/logos/logo512.webp";
-// import "./CustomNavbar.css";
-
-// const CustomNavbar = memo(() => {
-//   const { user, isUserLoggedIn, setIsUserLoggedIn } = useContext(UserContext);
-//   const location = useLocation();
-
-//   const logout = () => {
-//     auth.signOut();
-//     setIsUserLoggedIn(false);
-//   };
-
-//   const isActive = (path) => location.pathname === path;
-
-//   return (
-//     <nav className="navbar-custom bg-pinterest">
-//       <div className="container">
-//         <div className="navbar-brand me-2 d-flex">
-//           <Link to="/">
-//             <img
-//               src={pinterestLogo}
-//               alt="Pinterest logo"
-//               width="50"
-//               height="50"
-//             />
-//           </Link>
-//           <Link to="/" className={`h3 ${isActive("/") ? "h3-active" : ""}`}>
-//             Home
-//           </Link>
-//         </div>
-//         <form className="d-flex">
-//           <input
-//             type="search"
-//             placeholder="Search"
-//             className="me-2 form-control-custom"
-//             aria-label="Search"
-//           />
-//         </form>
-//         <div className="nav-links">
-//           {isUserLoggedIn ? (
-//             <>
-//               <Link to="/profile" className="nav-link-custom">
-//                 <img
-//                   src={user?.photoURL || "path/to/default-photo.jpg"}
-//                   alt="Profile"
-//                   width="50"
-//                   height="50"
-//                   className={`rounded-circle ${
-//                     isActive("/profile") ? "profileActive" : ""
-//                   }`}
-//                 />
-//               </Link>
-//               <Link to="/login" className="h3" onClick={logout}>
-//                 Logout
-//               </Link>
-//             </>
-//           ) : isActive("/login") ? (
-//             <></>
-//           ) : (
-//             <Link to="/login" className={`h3`}>
-//               Login
-//             </Link>
-//           )}
-//         </div>
-//       </div>
-//     </nav>
-//   );
-// });
-
-// export default CustomNavbar;
-
-import React from "react";
+import React, { useContext, memo } from "react";
 import {
   Navbar,
-  MobileNav,
+  Collapse,
   Typography,
   Button,
   IconButton,
-  Card,
 } from "@material-tailwind/react";
+import { Link, useLocation } from "react-router-dom";
+import { UserContext } from "../../customHooks/UserContext";
+import { auth } from "../../firebase";
+import pinterestLogo from "../../assets/logos/logo512.webp";
+import { useNavigate } from "react-router-dom";
+function CustomNavbar({ children }) {
+  const { user, isUserLoggedIn, setIsUserLoggedIn } = useContext(UserContext);
+  const location = useLocation();
+  const navigate = useNavigate();
 
-function CustomNavbar() {
+  const handleLoginClicked = () => {
+    navigate("/login");
+  };
+
+  const logout = () => {
+    navigate("/logout");
+  };
+
+  const isActive = (path) => location.pathname === path;
+
   const [openNav, setOpenNav] = React.useState(false);
 
   React.useEffect(() => {
@@ -92,81 +34,86 @@ function CustomNavbar() {
       () => window.innerWidth >= 960 && setOpenNav(false)
     );
   }, []);
-
-  const navList = (
-    <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
-      <Typography
-        as="li"
-        variant="small"
-        color="blue-gray"
-        className="p-1 font-normal"
-      >
-        <a href="#" className="flex items-center">
-          Pages
-        </a>
-      </Typography>
-      <Typography
-        as="li"
-        variant="small"
-        color="blue-gray"
-        className="p-1 font-normal"
-      >
-        <a href="#" className="flex items-center">
-          Account
-        </a>
-      </Typography>
-      <Typography
-        as="li"
-        variant="small"
-        color="blue-gray"
-        className="p-1 font-normal"
-      >
-        <a href="#" className="flex items-center">
-          Blocks
-        </a>
-      </Typography>
-      <Typography
-        as="li"
-        variant="small"
-        color="blue-gray"
-        className="p-1 font-normal"
-      >
-        <a href="#" className="flex items-center">
-          Docs
-        </a>
-      </Typography>
+  const navList = isUserLoggedIn ? (
+    <ul className="flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
+      <Link to="/profile" className="nav-link-custom">
+        <img
+          src={user?.photoURL || "path/to/default-photo.jpg"}
+          alt="Profile"
+          width="50"
+          height="50"
+          className="rounded-full cursor-pointer"
+        />
+      </Link>
+      <li>
+        <Link
+          to="/profile"
+          className={`p-1 font-normal items-center cursor-pointer ${
+            isActive("/profile")
+              ? "bg-blue-gray-900 text-white rounded px-4"
+              : ""
+          }`}
+        >
+          Profile
+        </Link>
+      </li>
     </ul>
+  ) : (
+    <></>
   );
-
   return (
-    <div className="-m-6 max-h-[768px] w-[calc(100%+48px)] overflow-scroll">
+    <div className="flex flex-col h-screen overflow-hidden">
       <Navbar className="sticky top-0 z-10 h-max max-w-full rounded-none px-4 py-2 lg:px-8 lg:py-4">
-        <div className="flex items-center justify-between text-blue-gray-900">
+        <div className="flex items-center justify-between text-blue-gray-900 mx-14">
           <Typography
             as="a"
-            href="#"
-            className="mr-4 cursor-pointer py-1.5 font-medium"
+            href="/"
+            className="mr-4 cursor-pointer py-1.5 font-medium flex items-center gap-2"
           >
-            Material Tailwind
+            <img
+              src={pinterestLogo}
+              alt="Pinterest logo"
+              width="30"
+              height="30"
+            />
+            <span
+              className={`${
+                isActive("/") ? "bg-blue-gray-900 text-white rounded px-4" : ""
+              }`}
+            >
+              Home
+            </span>
           </Typography>
           <div className="flex items-center gap-4">
-            <div className="mr-4 hidden lg:block">{navList}</div>
-            <div className="flex items-center gap-x-1">
+            <div className="hidden lg:block">{navList}</div>
+            {isUserLoggedIn ? (
+              <div className="flex items-center gap-x-1"></div>
+            ) : isActive("/login") ? (
+              <></>
+            ) : (
               <Button
                 variant="text"
                 size="sm"
                 className="hidden lg:inline-block"
+                onClick={() => handleLoginClicked()}
               >
                 <span>Log In</span>
               </Button>
-              <Button
-                variant="gradient"
-                size="sm"
-                className="hidden lg:inline-block"
-              >
-                <span>Sign in</span>
-              </Button>
-            </div>
+            )}
+            {isUserLoggedIn ? (
+              <div className="flex items-center gap-x-1">
+                <Button
+                  variant="text"
+                  size="sm"
+                  className="hidden lg:inline-block"
+                  onClick={() => logout()}
+                >
+                  <span>Logout</span>
+                </Button>
+              </div>
+            ) : (
+              <></>
+            )}
             <IconButton
               variant="text"
               className="ml-auto h-6 w-6 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden"
@@ -206,45 +153,34 @@ function CustomNavbar() {
             </IconButton>
           </div>
         </div>
-        <MobileNav open={openNav}>
+        <Collapse open={openNav}>
           {navList}
           <div className="flex items-center gap-x-1">
-            <Button fullWidth variant="text" size="sm" className="">
-              <span>Log In</span>
-            </Button>
-            <Button fullWidth variant="gradient" size="sm" className="">
-              <span>Sign in</span>
-            </Button>
+            {!isUserLoggedIn ? (
+              <Button
+                fullWidth
+                variant="text"
+                size="sm"
+                className=""
+                onClick={() => handleLoginClicked()}
+              >
+                <span>Log In</span>
+              </Button>
+            ) : (
+              <Button
+                fullWidth
+                variant="text"
+                size="sm"
+                className=""
+                onClick={() => logout()}
+              >
+                <span>Logout</span>
+              </Button>
+            )}
           </div>
-        </MobileNav>
+        </Collapse>
       </Navbar>
-      <div className="mx-auto max-w-screen-md py-12">
-        <Card className="mb-12 overflow-hidden">
-          <img
-            alt="nature"
-            className="h-[32rem] w-full object-cover object-center"
-            src="https://images.unsplash.com/photo-1485470733090-0aae1788d5af?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2717&q=80"
-          />
-        </Card>
-        <Typography variant="h2" color="blue-gray" className="mb-2">
-          What is Material Tailwind
-        </Typography>
-        <Typography color="gray" className="font-normal">
-          Can you help me out? you will get a lot of free exposure doing this
-          can my website be in english?. There is too much white space do less
-          with more, so that will be a conversation piece can you rework to make
-          the pizza look more delicious other agencies charge much lesser can
-          you make the blue bluer?. I think we need to start from scratch can my
-          website be in english?, yet make it sexy i&apos;ll pay you in a week
-          we don&apos;t need to pay upfront i hope you understand can you make
-          it stand out more?. Make the font bigger can you help me out? you will
-          get a lot of free exposure doing this that&apos;s going to be a chunk
-          of change other agencies charge much lesser. Are you busy this
-          weekend? I have a new project with a tight deadline that&apos;s going
-          to be a chunk of change. There are more projects lined up charge extra
-          the next time.
-        </Typography>
-      </div>
+      <div className="flex-grow overflow-auto">{children}</div>
     </div>
   );
 }

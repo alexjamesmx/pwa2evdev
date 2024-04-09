@@ -1,1 +1,0 @@
-.red{color:red}.image-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));grid-gap:1rem}.image-wrapper{overflow:hidden}.image{width:100%;height:auto;-o-object-fit:cover;object-fit:cover;cursor:pointer;transition:transform .3s ease}.image:hover{transform:scale(1.05)}

@@ -33,15 +33,12 @@ const ListImages = memo(({ images, fetchMoreImages }) => {
 
   const optimizeImageUrl = useCallback((url) => {
     let optimizedUrl = url;
-
     // Function to replace the 'q' parameter with 'q=80'
     if (optimizedUrl.includes("?q")) {
-      optimizedUrl = optimizedUrl.replace(/(\?|&)q=[^&]*/, "$1q=80");
+      optimizedUrl = optimizedUrl.replace(/(\\?|&)q=[^&]*/, "$1q=80");
     }
-
     // Function to replace the 'fm' parameter with 'fm=webp'
-    optimizedUrl = optimizedUrl.replace(/(\?|&)fm=[^&]*/, "$1fm=webp");
-
+    optimizedUrl = optimizedUrl.replace(/(\\?|&)fm=[^&]*/, "$1fm=webp");
     return optimizedUrl;
   }, []);
 
@@ -57,13 +54,12 @@ const ListImages = memo(({ images, fetchMoreImages }) => {
       <div className="image-grid">
         {images.map((image, index) => (
           <Card
-            className="h-64 w-96 cursor-pointer overflow-hidden transition-opacity hover:opacity-90"
+            key={index}
+            className="h-64 w-64 cursor-pointer overflow-hidden transition-opacity hover:opacity-90"
             onClick={() =>
               handleOpen(image, optimizeImageUrl(image.urls.regular))
             }
-            key={index}
           >
-            {" "}
             <LazyLoadImage
               loading="lazy"
               src={optimizeImageUrl(image.urls.regular)}

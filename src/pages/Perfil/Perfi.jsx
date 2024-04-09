@@ -20,6 +20,8 @@ const Perfil = () => {
     setShowCategory(category);
   };
 
+  console.log("showCategory", showCategory);
+
   return (
     <CategoryContext.Provider value={{ showCategory, toggleCategory }}>
       <>
@@ -37,8 +39,7 @@ const Perfil = () => {
             <div className="perfil-section">
               <h3>{user.displayName}</h3>
               <button
-                className="mt-2 rounded-4 p-2 fs-6 fw-bold"
-                variant="secondary"
+                className="bg-blue-gray-700 text-white p-3 rounded-full mt-3"
                 onClick={handleEditProfile}
               >
                 Editar perfil
@@ -47,10 +48,10 @@ const Perfil = () => {
           </div>
         </div>
         <div className="perfil-library">
-          <div className="perfil-section d-flex w-100 justify-content-center gap-5">
+          <div className="perfil-section justify-content-center gap-5 flex">
             <h3
               className={`pointer ${
-                showCategory === "saved" ? "text-decoration-underline" : ""
+                showCategory === "saved" ? "underline text-blue-500" : ""
               }`}
               onClick={() => toggleCategory("saved")}
             >
@@ -58,15 +59,15 @@ const Perfil = () => {
             </h3>
             <h3
               className={`pointer ${
-                showCategory !== "saved" ? "text-decoration-underline" : ""
+                showCategory !== "saved" ? "text-blue-500 underline" : ""
               }`}
               onClick={() => toggleCategory("library")}
             >
               Library
             </h3>
           </div>
-          <UserLibrary />
         </div>
+        <UserLibrary />
       </>
     </CategoryContext.Provider>
   );
