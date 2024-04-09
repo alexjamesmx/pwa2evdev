@@ -9,9 +9,9 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
 import CustomNavbar from "./components/navbar/CustomNavbar";
 import { UserProvider } from "./customHooks/UserContext";
+import { ImagesProvider } from "./customHooks/ImagesContext";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
-import.meta.env;
 
 const Home = lazy(() => import("./pages/Home/Home"));
 const Perfil = lazy(() => import("./pages/Perfil/Perfi"));
@@ -19,7 +19,6 @@ const Login = lazy(() => import("./pages/Login/Login"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const EditarPerfil = lazy(() => import("./pages/Perfil/EditarPerfil"));
 const CategoryView = lazy(() => import("./pages/CategoryView/CategoryView"));
-const Logout = lazy(() => import("./pages/Logout"));
 const AppRoutes = React.memo(({ isUserLoggedIn }) => {
   const [searchParams] = useSearchParams();
   const category = searchParams.get("category");
@@ -47,10 +46,6 @@ const AppRoutes = React.memo(({ isUserLoggedIn }) => {
       element: isUserLoggedIn ? <Navigate to="/" /> : <Login />,
     },
     {
-      path: "/logout",
-      element: isUserLoggedIn ? <Navigate to="/" /> : <Login />,
-    },
-    {
       path: "/",
       element: <Home />,
     },
@@ -74,12 +69,14 @@ const App = () => {
   return (
     <BrowserRouter>
       <UserProvider>
-        <ToastContainer />
-        <CustomNavbar isUserLoggedIn={isUserLoggedIn}>
+        <ImagesProvider>
+          <ToastContainer />
           <Suspense fallback={<div>Loading...</div>}>
-            <AppRoutes isUserLoggedIn={isUserLoggedIn} />
+            <CustomNavbar isUserLoggedIn={isUserLoggedIn}>
+              <AppRoutes isUserLoggedIn={isUserLoggedIn} />
+            </CustomNavbar>
           </Suspense>
-        </CustomNavbar>
+        </ImagesProvider>
       </UserProvider>
     </BrowserRouter>
   );

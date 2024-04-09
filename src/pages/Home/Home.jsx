@@ -1,39 +1,27 @@
-import React, { useState, useEffect, lazy, Suspense } from "react";
-import axios from "axios";
-import "./Home.css";
-import ListImages from "../../components/ListImages/ListImages";
-const Home = () => {
-  const [images, setImages] = useState([]);
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    const fetchImages = async () => {
-      try {
-        // const accessKey = "73m9zE9ivuue_6Dl-i9sqsRUJGDdTGs9upcq3MNDf4I";
-        const count = 5;
-        const response = await axios.get(
-          `https://api.unsplash.com/photos/random?count=${count}&client_id=${process.env.ACCESS_KEY}`
-        );
-        setImages(response.data);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching images:", error);
-      }
-    };
-    fetchImages();
-  }, []);
+import React, { lazy, Suspense, useContext } from "react";
+import { ImagesContext } from "../../customHooks/ImagesContext";
 
-  console.log(process.env.ACCESS_KEY);
+const ListImages = lazy(() => import("../../components/ListImages/ListImages"));
+
+const Home = () => {
+  const { storedImages, s_loading, setStoredImages, page, setPage } =
+    useContext(ImagesContext);
 
   return (
-    <>
-      {loading ? (
+    <div className="container mx-auto py-8">
+      {s_loading ? (
         <p>Loading images...</p>
       ) : (
         <Suspense fallback={<div>Loading...</div>}>
-          <ListImages images={images} />
+          <ListImages
+            images={storedImages}
+            setImages={setStoredImages}
+            page={page}
+            setPage={setPage}
+          />
         </Suspense>
       )}
-    </>
+    </div>
   );
 };
 

@@ -39,23 +39,28 @@ self.addEventListener("install", (event) => {
 
 self.addEventListener("fetch", (event) => {
   // Cache with network fallback
-  const respuesta = caches.match(event.request).then((response) => {
-    if (response) return response;
-    // Si no existe el archivo, verifica si hay conexión
-    if (!navigator.onLine) {
-      // Si no hay conexión, responde con la imagen not-found.jpg desde el cache estático
-      return caches.match("/not-found.jpg");
-    }
-    // Si hay conexión, descarga el archivo
-    return fetch(event.request).then((newResponse) => {
-      caches.open(CACHE_DYNAMIC).then((cache) => {
-        cache.put(event.request, newResponse);
-        limpiarCache(CACHE_DYNAMIC, CACHE_DYNAMIC_LIMIT);
+  if (event.request.method === "GET") {
+    const respuesta = caches.match(event.request).then((response) => {
+      if (response) return response;
+      // Si no existe el archivo, verifica si hay conexión
+      if (!navigator.onLine) {
+        // Si no hay conexión, responde con la imagen not-found.jpg desde el cache estático
+        return caches.match("/not-found.jpg");
+      }
+      // Si hay conexión, descarga el archivo
+      return fetch(event.request).then((newResponse) => {
+        caches.open(CACHE_DYNAMIC).then((cache) => {
+          cache.put(event.request, newResponse);
+          limpiarCache(CACHE_DYNAMIC, CACHE_DYNAMIC_LIMIT);
+        });
+        return newResponse.clone();
       });
-      return newResponse.clone();
     });
-  });
-  event.respondWith(respuesta);
+    event.respondWith(respuesta);
+  } else {
+    // Si no es una solicitud GET, simplemente pasa la solicitud al servidor
+    event.respondWith(fetch(event.request));
+  }
 });
 
 // Event listeners para manejar la conexión

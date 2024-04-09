@@ -1,8 +1,9 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, lazy } from "react";
 import { useNavigate } from "react-router-dom";
-import UserLibrary from "../../components/UserLibrary/UserLibrary";
 import { UserContext } from "../../customHooks/UserContext";
-import "./Perfil.css";
+import UserLibrary from "../../components/UserLibrary/UserLibrary";
+
+const DefaultPhoto = lazy(() => import("../../assets/user-default-120.webp"));
 
 // Create a context for managing the selected category
 const CategoryContext = createContext();
@@ -20,37 +21,32 @@ const Perfil = () => {
     setShowCategory(category);
   };
 
-  console.log("showCategory", showCategory);
-
   return (
     <CategoryContext.Provider value={{ showCategory, toggleCategory }}>
       <>
-        <div className="perfil-header">
-          <div className="perfil-info">
+        <div className="flex flex-col items-center">
+          <div className="flex flex-row items-center my-8">
             <img
-              src={user.photoURL}
+              src={user.photoURL || DefaultPhoto}
               alt="Foto de perfil"
-              className="perfil-photo"
-              style={{ width: 120, height: 120 }}
+              className="rounded-full outline outline-4 outline-blue-gray-900 w-30 h-30"
             />
-            <div className="perfil-section">
+            <div className="ml-4">
               <h3>{user.email}</h3>
-            </div>
-            <div className="perfil-section">
-              <h3>{user.displayName}</h3>
-              <button
-                className="bg-blue-gray-700 text-white p-3 rounded-full mt-3"
-                onClick={handleEditProfile}
-              >
-                Editar perfil
-              </button>
+              <div className="mt-2">
+                <h3>{user.displayName}</h3>
+                <button
+                  className="bg-blue-gray-700 text-white p-3 rounded-full mt-3"
+                  onClick={handleEditProfile}
+                >
+                  Editar perfil
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="perfil-library">
-          <div className="perfil-section justify-content-center gap-5 flex">
+          <div className="flex flex-row justify-center gap-5">
             <h3
-              className={`pointer ${
+              className={`cursor-pointer ${
                 showCategory === "saved" ? "underline text-blue-500" : ""
               }`}
               onClick={() => toggleCategory("saved")}
@@ -58,7 +54,7 @@ const Perfil = () => {
               Saved
             </h3>
             <h3
-              className={`pointer ${
+              className={`cursor-pointer ${
                 showCategory !== "saved" ? "text-blue-500 underline" : ""
               }`}
               onClick={() => toggleCategory("library")}
@@ -67,7 +63,7 @@ const Perfil = () => {
             </h3>
           </div>
         </div>
-        <UserLibrary />
+        <UserLibrary showCategory={showCategory} />
       </>
     </CategoryContext.Provider>
   );

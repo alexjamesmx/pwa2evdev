@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./EditarPerfil.css";
 import { ArrowLeftSquareFill } from "react-bootstrap-icons";
 
 const EditarPerfil = () => {
@@ -31,26 +30,28 @@ const EditarPerfil = () => {
   return (
     <>
       <div className="ms-2 d-flex">
-      <ArrowLeftSquareFill className="back-button pointer" onClick={() => window.history.back()}
-      width={40}
-      height={40} />
-    </div>
-     <div className="editar-perfil-container">
-      <h1>Edit Profile</h1>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="displayName">New Name:</label>
-        <input
-          type="text"
-          id="displayName"
-          value={newDisplayName}
-          onChange={handleChange}
+        <ArrowLeftSquareFill
+          className="back-button pointer"
+          onClick={() => window.history.back()}
+          width={40}
+          height={40}
         />
-        <button type="submit">Save Changes</button>
-      </form>
-    </div>
+      </div>
+      <div className="max-w-96 my-0 mx-auto bg-white rounded-lg border ">
+        <h1>Edit Profile</h1>
+        <form onSubmit={handleSubmit}>
+          <label htmlFor="displayName">New Name:</label>
+          <input
+            type="text"
+            id="displayName"
+            value={newDisplayName}
+            onChange={handleChange}
+          />
+          <button type="submit">Save Changes</button>
+        </form>
+      </div>
     </>
   );
-   
 };
 
 export default EditarPerfil;

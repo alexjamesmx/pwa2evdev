@@ -1,15 +1,9 @@
-import React, { useContext, memo } from "react";
-import {
-  Navbar,
-  Collapse,
-  Typography,
-  Button,
-  IconButton,
-} from "@material-tailwind/react";
+import React, { useContext } from "react";
+import { Navbar, Collapse, Button, IconButton } from "@material-tailwind/react";
 import { Link, useLocation } from "react-router-dom";
 import { UserContext } from "../../customHooks/UserContext";
 import { auth } from "../../firebase";
-import pinterestLogo from "../../assets/logos/logo512.webp";
+import Logo from "../../assets/logos/logo40.svg";
 import { useNavigate } from "react-router-dom";
 function CustomNavbar({ children }) {
   const { user, isUserLoggedIn, setIsUserLoggedIn } = useContext(UserContext);
@@ -21,11 +15,16 @@ function CustomNavbar({ children }) {
   };
 
   const logout = () => {
-    navigate("/logout");
+    console.log("Logging out...");
+    auth.signOut();
+    setIsUserLoggedIn(false);
+
+    navigate("/login");
   };
 
-  const isActive = (path) => location.pathname === path;
-
+  const isActive = (path) => {
+    return location.pathname === path || location.pathname.includes(path);
+  };
   const [openNav, setOpenNav] = React.useState(false);
 
   React.useEffect(() => {
@@ -34,6 +33,9 @@ function CustomNavbar({ children }) {
       () => window.innerWidth >= 960 && setOpenNav(false)
     );
   }, []);
+
+  console.log(isActive("/library"));
+
   const navList = isUserLoggedIn ? (
     <ul className="flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
       <Link to="/profile" className="nav-link-custom">
@@ -65,17 +67,11 @@ function CustomNavbar({ children }) {
     <div className="flex flex-col h-screen overflow-hidden">
       <Navbar className="sticky top-0 z-10 h-max max-w-full rounded-none px-4 py-2 lg:px-8 lg:py-4">
         <div className="flex items-center justify-between text-blue-gray-900 mx-14">
-          <Typography
-            as="a"
-            href="/"
+          <Link
+            to="/"
             className="mr-4 cursor-pointer py-1.5 font-medium flex items-center gap-2"
           >
-            <img
-              src={pinterestLogo}
-              alt="Pinterest logo"
-              width="30"
-              height="30"
-            />
+            <img src={Logo} alt="Logo" width="40" height="40" />
             <span
               className={`${
                 isActive("/") ? "bg-blue-gray-900 text-white rounded px-4" : ""
@@ -83,7 +79,7 @@ function CustomNavbar({ children }) {
             >
               Home
             </span>
-          </Typography>
+          </Link>
           <div className="flex items-center gap-4">
             <div className="hidden lg:block">{navList}</div>
             {isUserLoggedIn ? (
