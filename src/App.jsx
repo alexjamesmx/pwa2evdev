@@ -7,19 +7,17 @@ import {
 } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
-import CustomNavbar from "./components/CustomNavbar";
+import CustomNavbar from "./components/navbar/CustomNavbar";
 import { UserProvider } from "./customHooks/UserContext";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
-import "@fontsource/roboto/400.css"; // Import only the necessary font weights
-import "@fontsource/roboto/500.css";
 
-const Home = lazy(() => import("./pages/Home"));
-const Perfil = lazy(() => import("./pages/Perfi"));
-const Login = lazy(() => import("./pages/Login"));
+const Home = lazy(() => import("./pages/Home/Home"));
+const Perfil = lazy(() => import("./pages/Perfil/Perfi"));
+const Login = lazy(() => import("./pages/Login/Login"));
 const NotFound = lazy(() => import("./pages/NotFound"));
-const EditarPerfil = lazy(() => import("./pages/EditarPerfil"));
-const CategoryView = lazy(() => import("./pages/CategoryView"));
+const EditarPerfil = lazy(() => import("./pages/Perfil/EditarPerfil"));
+const CategoryView = lazy(() => import("./pages/CategoryView/CategoryView"));
 
 const AppRoutes = React.memo(({ isUserLoggedIn }) => {
   const [searchParams] = useSearchParams();
@@ -36,11 +34,12 @@ const AppRoutes = React.memo(({ isUserLoggedIn }) => {
     },
     {
       path: "/library",
-      element: isUserLoggedIn && category ? (
-        <CategoryView categorySelected={category} />
-      ) : (
-        <Login />
-      ),
+      element:
+        isUserLoggedIn && category ? (
+          <CategoryView categorySelected={category} />
+        ) : (
+          <Login />
+        ),
     },
     {
       path: "/login",
@@ -68,17 +67,15 @@ const App = () => {
   }, []);
 
   return (
-    <div>
-      <BrowserRouter>
-        <UserProvider>
-          <ToastContainer />
-          <CustomNavbar isUserLoggedIn={isUserLoggedIn} />
-          <Suspense fallback={<div>Loading...</div>}>
-            <AppRoutes isUserLoggedIn={isUserLoggedIn} />
-          </Suspense>
-        </UserProvider>
-      </BrowserRouter>
-    </div>
+    <BrowserRouter>
+      <UserProvider>
+        <ToastContainer />
+        <CustomNavbar isUserLoggedIn={isUserLoggedIn} />
+        <Suspense fallback={<div>Loading...</div>}>
+          <AppRoutes isUserLoggedIn={isUserLoggedIn} />
+        </Suspense>
+      </UserProvider>
+    </BrowserRouter>
   );
 };
 

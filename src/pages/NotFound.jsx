@@ -1,5 +1,4 @@
 import React from "react";
-import CustomNavbar from "../components/CustomNavbar";
 
 const NotFound = () => {
   return (

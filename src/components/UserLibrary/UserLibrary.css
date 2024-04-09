@@ -1,0 +1,27 @@
+.library-preview-card {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  flex-direction: row;
+}
+
+.category-card {
+  width: 236px;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.image-grid {
+  width: 100%;
+}
+
+.library-container {
+  height: 157px;
+  border-radius: 16px;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 100%;
+}
+
