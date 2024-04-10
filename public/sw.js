@@ -21,15 +21,15 @@ self.addEventListener("install", (event) => {
   const cachePromise = caches.open(CACHE_STATIC).then((cache) => {
     return cache.addAll([
       "/",
-      "/index.html",
-      "/sw.js",
-      "/js/sw-utils.js",
-      "manifest.json",
-      "favicon.ico",
-      "firebase-messaging.sw.js",
-      "/pages/offline.html",
-      "not-found.jpeg",
-      "app.js",
+      // "/index.html",
+      // "/sw.js",
+      // "/js/sw-utils.js",
+      // "manifest.json",
+      // "favicon.ico",
+      // "firebase-messaging.sw.js",
+      // "/pages/offline.html",
+      // "not-found.jpeg",
+      // "app.js",
     ]);
   });
   const cacheInmutable = caches.open(CACHE_INMUTABLE).then((cache) => {
