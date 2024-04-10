@@ -7,7 +7,7 @@ import { compression } from "vite-plugin-compression2";
 dotenv.config();
 export default defineConfig(({ command }) => {
   const config = {
-    base: "/pwa2evdev",
+    base: "/pwa2evdev/",
     plugins: [react(), compression()],
 
     define: {
@@ -17,8 +17,6 @@ export default defineConfig(({ command }) => {
       reportCompressedSize: true,
     },
   };
-  if (command !== "serve") {
-    config.base = "/pwa2evdev";
-  }
+
   return config;
 });
