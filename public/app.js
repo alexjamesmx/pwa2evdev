@@ -1,5 +1,5 @@
-const baseURL = "/";
-// const baseURL = "/pwa2evdev/";
+// const baseURL = "/";
+const baseURL = "/pwa2evdev/";
 
 if (navigator.serviceWorker) {
   console.log("Registering sw");
