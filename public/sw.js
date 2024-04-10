@@ -37,6 +37,24 @@ self.addEventListener("install", (event) => {
   });
   event.waitUntil(Promise.all([cachePromise, cacheInmutable]));
 });
+self.addEventListener("activate", (event) => {
+  console.log("SW: esta siendo activando...");
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cacheName) => {
+          if (
+            cacheName !== CACHE_STATIC &&
+            cacheName !== CACHE_DYNAMIC &&
+            cacheName !== CACHE_INMUTABLE
+          ) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
+});
 
 self.addEventListener("fetch", (event) => {
   // Cache with network fallback
@@ -82,21 +100,10 @@ self.addEventListener("offline", sendConnectionStatus);
 // Inicializa el estado de conexión al inicio
 sendConnectionStatus();
 
-self.addEventListener("activate", (event) => {
-  console.log("SW: esta siendo activando...");
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (
-            cacheName !== CACHE_STATIC &&
-            cacheName !== CACHE_DYNAMIC &&
-            cacheName !== CACHE_INMUTABLE
-          ) {
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    })
-  );
+// Almacenamiento de la sesión del usuario
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "storeUserData") {
+    const userData = event.data.userData;
+    localStorage.setItem("userData", JSON.stringify(userData));
+  }
 });

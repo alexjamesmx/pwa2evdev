@@ -2,6 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getMessaging, getToken } from "firebase/messaging";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { collection, doc, getFirestore, updateDoc } from "@firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCBH2UdRWATVXpvk1ohUDEI0pgjnYfXD_I",
@@ -26,3 +27,19 @@ export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
 const analytics = getAnalytics(app);
 
 export const messaging = getMessaging(app);
+
+export const firestore = getFirestore(app);
+
+export const updateUserDisplayNameInDatabase = async (
+  userId,
+  newDisplayName
+) => {
+  try {
+    await updateDoc(doc(collection(firestore, "users"), userId), {
+      displayName: newDisplayName,
+    });
+  } catch (error) {
+    console.error("Error updating user display name in database:", error);
+    throw error;
+  }
+};

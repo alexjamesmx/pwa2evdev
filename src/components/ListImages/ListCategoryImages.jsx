@@ -27,7 +27,6 @@ const ListCategoryImages = ({ images }) => {
 
   const handleOpen = async (image, url) => {
     if (!handleUnregisteredUsers()) return;
-    console.log("image", image);
     setSrcImage(url);
     setSelectedImage(image);
     setOpen((cur) => !cur);
@@ -35,8 +34,8 @@ const ListCategoryImages = ({ images }) => {
 
   const renderImages = () =>
     images.length > 0 ? (
-      images.map((image, index) => (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 ">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 ">
+        {images.map((image, index) => (
           <Card
             key={index}
             className="cursor-pointer transition-opacity hover:opacity-90"
@@ -55,8 +54,8 @@ const ListCategoryImages = ({ images }) => {
               width={200}
             />
           </Card>
-        </div>
-      ))
+        ))}
+      </div>
     ) : (
       <div className="grid place-items-center  h-[calc(100%-48px)]">
         <p>This libray is empty. Try adding new images! 🔥</p>

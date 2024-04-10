@@ -23,7 +23,7 @@ function CustomNavbar({ children }) {
   };
 
   const isActive = (path) => {
-    return location.pathname === path || location.pathname.includes(path);
+    return location.pathname === path;
   };
   const [openNav, setOpenNav] = React.useState(false);
 
@@ -61,6 +61,7 @@ function CustomNavbar({ children }) {
   ) : (
     <></>
   );
+
   return (
     <div>
       <Navbar className="sticky top-0 z-10 h-max max-w-full rounded-none px-4 py-2 lg:px-8 lg:py-4">

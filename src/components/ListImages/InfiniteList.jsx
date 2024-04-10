@@ -2,11 +2,9 @@ import React, { useState, useContext, useEffect, useMemo } from "react";
 import ImageDetails from "../imageDetails/ImageDetails";
 import { toast } from "react-toastify";
 import { UserContext } from "../../customHooks/UserContext";
-import { LazyLoadImage } from "react-lazy-load-image-component";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { Card } from "@material-tailwind/react";
 import axios from "axios";
-import { fetchPages } from "../../customHooks/fetchPages";
 import { Loading } from "../Loading";
 import { optimizeImageUrl } from "../../utils";
 const InfiniteList = () => {
@@ -68,7 +66,7 @@ const InfiniteList = () => {
   };
 
   if (!nextImages || nextImages.length === 0) {
-    return <p>Loading images...</p>;
+    return <Loading />;
   }
 
   const renderImages = () => (

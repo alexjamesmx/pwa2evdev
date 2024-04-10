@@ -1,8 +1,15 @@
-import React, { createContext, useContext, useState, lazy } from "react";
-import { useNavigate } from "react-router-dom";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  lazy,
+  useEffect,
+} from "react";
 import { UserContext } from "../../customHooks/UserContext";
 import UserLibrary from "../../components/UserLibrary/UserLibrary";
 import { DrawerBottom } from "../../components/imageDetails/DrawerBottom";
+import { doc, getDoc, getFirestore } from "@firebase/firestore";
+import EditarPerfil from "./EditarPerfil";
 
 const DefaultPhoto = lazy(() => import("../../assets/user-default-120.webp"));
 
@@ -10,21 +17,38 @@ const DefaultPhoto = lazy(() => import("../../assets/user-default-120.webp"));
 const CategoryContext = createContext();
 
 const Perfil = () => {
-  const { user } = useContext(UserContext);
-  const navigate = useNavigate();
+  const { user, setUser } = useContext(UserContext);
   const [showCategory, setShowCategory] = useState("saved");
   const [openBottom, setOpenBottom] = useState(false);
   const openDrawerBottom = () => setOpenBottom(true);
   const closeDrawerBottom = () => setOpenBottom(false);
-  const [refreshLibrary, setRefreshLibrary] = useState(false);
+  const [displayName, setDisplayName] = useState("");
+
+  const [open, setOpen] = React.useState(false);
 
   const handleEditProfile = () => {
-    navigate("/editProfile");
+    setOpen((cur) => !cur);
   };
 
   const toggleCategory = (category) => {
     setShowCategory(category);
   };
+
+  useEffect(() => {
+    const loadUserData = async () => {
+      if (user) {
+        const db = getFirestore();
+        const userDocRef = doc(db, "users", user.uid);
+        const userDocSnap = await getDoc(userDocRef);
+        if (userDocSnap.exists()) {
+          const userData = userDocSnap.data();
+          setDisplayName(userData.displayName);
+        }
+      }
+    };
+
+    loadUserData();
+  }, [user]);
 
   return (
     <CategoryContext.Provider value={{ showCategory, toggleCategory }}>
@@ -38,9 +62,13 @@ const Perfil = () => {
               className="rounded-full outline outline-4 outline-blue-gray-900 w-30 h-30"
             />
             <div className="ml-4">
-              <h3>{user.email}</h3>
+              <h3 className="font-bold">{user.email}</h3>
               <div className="mt-2">
-                <h3>{user.displayName}</h3>
+                <h3>
+                  <span className="font-thin italic">username</span>:{" "}
+                  {displayName}
+                </h3>
+
                 <button
                   className="bg-blue-gray-700 text-white p-3 rounded-full mt-3"
                   onClick={handleEditProfile}
@@ -72,13 +100,20 @@ const Perfil = () => {
         <UserLibrary
           showCategory={showCategory}
           openDrawerBottom={openDrawerBottom}
-          refreshLibrary={refreshLibrary}
         />
         <DrawerBottom
           openBottom={openBottom}
           closeDrawerBottom={closeDrawerBottom}
         />
       </>
+      <EditarPerfil
+        open={open}
+        setOpen={setOpen}
+        user={user}
+        setUser={setUser}
+      />
+
+      <></>
     </CategoryContext.Provider>
   );
 };
