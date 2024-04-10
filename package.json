@@ -1,9 +1,12 @@
 {
   "name": "intro-sw",
   "version": "0.1.0",
+  "homepage": "https://alexjamesmx.github.io/pwa2evdev",
   "private": true,
   "type": "module",
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "vite",
     "build": "vite build",
     "serve": "vite preview"
@@ -27,6 +30,7 @@
   },
   "devDependencies": {
     "autoprefixer": "^10.4.19",
+    "gh-pages": "^6.1.1",
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.3",
     "vite-plugin-compression2": "^1.0.0"
