@@ -1,7 +1,7 @@
 {
   "name": "intro-sw",
   "version": "0.1.0",
-  "homepage": "https://alexjamesmx.github.io/pwa2evdev",
+  "homepage": "https://alexjamesmx.github.io/pwa2evdev/",
   "private": true,
   "type": "module",
   "scripts": {
