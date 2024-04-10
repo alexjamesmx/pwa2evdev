@@ -2,9 +2,7 @@
 const baseURL = "/pwa2evdev/";
 
 if (navigator.serviceWorker) {
-  navigator.serviceWorker.register(baseURL + "/sw.js");
-}
-if (navigator.serviceWorker) {
+  console.log("inner app");
   navigator.serviceWorker.register(baseURL + "/sw.js");
 }
 
