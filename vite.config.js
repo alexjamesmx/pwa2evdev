@@ -17,6 +17,9 @@ export default defineConfig(({ command }) => {
       reportCompressedSize: true,
     },
   };
+  if (command !== "serve") {
+    config.base = "/pwa2evdev/";
+  }
 
   return config;
 });
