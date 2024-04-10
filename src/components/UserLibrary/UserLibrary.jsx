@@ -37,13 +37,10 @@ const UserLibrary = memo(({ showCategory }) => {
         className="flex justify-center flex-wrap flex-row"
         onClick={displayLibrary}
       >
-        <div className="pointer w-64 rounded overflow-hidden shadow-sm">
+        <div className="pointer w-64 rounded shadow-sm">
           <div className="image-grid">
             {categoryData.images.slice(0, 1).map((image) => (
-              <div
-                key={image.id}
-                className="rounded overflow-hidden relative h-44"
-              >
+              <div key={image.id} className="rounded relative h-44">
                 <img
                   src={image.url}
                   alt={image.description}

@@ -34,8 +34,6 @@ function CustomNavbar({ children }) {
     );
   }, []);
 
-  console.log(isActive("/library"));
-
   const navList = isUserLoggedIn ? (
     <ul className="flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
       <Link to="/profile" className="nav-link-custom">
@@ -64,7 +62,7 @@ function CustomNavbar({ children }) {
     <></>
   );
   return (
-    <div className="flex flex-col h-screen overflow-hidden">
+    <div className=" w-[calc(100%+48px)]">
       <Navbar className="sticky top-0 z-10 h-max max-w-full rounded-none px-4 py-2 lg:px-8 lg:py-4">
         <div className="flex items-center justify-between text-blue-gray-900 mx-14">
           <Link
@@ -176,7 +174,7 @@ function CustomNavbar({ children }) {
           </div>
         </Collapse>
       </Navbar>
-      <div className="flex-grow overflow-auto">{children}</div>
+      <div className="container mx-auto">{children}</div>
     </div>
   );
 }

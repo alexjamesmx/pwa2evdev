@@ -7,7 +7,7 @@ const fetchRandomImages = () => {
 
   const fetchImages = useCallback(async (page = 1) => {
     try {
-      const total = 15;
+      const total = 40;
       const response = await axios.get(
         // `https://api.unsplash.com/photos/random?count=${count}&client_id=${process.env.ACCESS_KEY}`
         `https://api.unsplash.com/photos?page=${page}&per_page=${total}&client_id=${process.env.ACCESS_KEY}`
