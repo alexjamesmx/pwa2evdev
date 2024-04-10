@@ -1,7 +1,9 @@
 import React, { lazy, Suspense, useContext } from "react";
 import { ImagesContext } from "../../customHooks/ImagesContext";
 
-const ListImages = lazy(() => import("../../components/ListImages/ListImages"));
+const InfiniteList = lazy(() =>
+  import("../../components/ListImages/InfiniteList")
+);
 
 const Home = () => {
   const { storedImages, s_loading, setStoredImages, page, setPage } =
@@ -11,7 +13,7 @@ const Home = () => {
     <p>Loading images...</p>
   ) : (
     <Suspense fallback={<div>Loading...</div>}>
-      <ListImages
+      <InfiniteList
         images={storedImages}
         setImages={setStoredImages}
         page={page}

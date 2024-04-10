@@ -29,7 +29,7 @@ const Login = () => {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen">
+    <div className="flex items-center justify-center h-[calc(100vh-200px)]">
       <div className="bg-white p-8 rounded-lg shadow-md bg-gradient-to-r from-pink-500 to-purple-500 max-w-md w-full h-2/5 flex justify-center flex-col">
         <h2 className="text-3xl font-bold mb-4 text-center">Login</h2>
         <button

@@ -1,7 +1,7 @@
 // Crear las variables de cache
-const CACHE_DYNAMIC = "dynamic-v1"; // Para los archivos que se van a descargar
-const CACHE_STATIC = "static-v1"; // App shell
-const CACHE_INMUTABLE = "inmutable-v1"; // CDN de terceros. LIBRERIAS
+const CACHE_DYNAMIC = "dynamic-v0"; // Para los archivos que se van a descargar
+const CACHE_STATIC = "static-v0"; // App shell
+const CACHE_INMUTABLE = "inmutable-v0"; // CDN de terceros. LIBRERIAS
 
 const CACHE_DYNAMIC_LIMIT = 30;
 
@@ -17,6 +17,7 @@ const limpiarCache = (cacheName, numberItem) => {
 };
 
 self.addEventListener("install", (event) => {
+  console.log("installing sw. ..");
   const cachePromise = caches.open(CACHE_STATIC).then((cache) => {
     return cache.addAll([
       "/",

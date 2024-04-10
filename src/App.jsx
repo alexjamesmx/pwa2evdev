@@ -66,6 +66,7 @@ const App = () => {
     return unsubscribe;
   }, []);
 
+  console.log("route basename is: ", import.meta.env.DEV);
   return (
     <BrowserRouter basename={import.meta.env.DEV ? "/" : "/pwa2evdev/"}>
       <UserProvider>

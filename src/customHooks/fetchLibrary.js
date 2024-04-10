@@ -22,8 +22,6 @@ const fetchLibrary = async (user) => {
     console.error("Error checking saved status", error);
   }
 
-  console.log("returning,...");
-
   return { library, loading };
 };
 

@@ -1,9 +1,9 @@
-// const baseURL = "/"
-const baseURL = "/pwa2evdev/";
+const baseURL = "/";
+// const baseURL = "/pwa2evdev/";
 
 if (navigator.serviceWorker) {
-  console.log("inner app");
-  navigator.serviceWorker.register(baseURL + "/sw.js");
+  console.log("Registering sw");
+  navigator.serviceWorker.register(baseURL + "sw.js");
 }
 
 window.addEventListener("load", () => {

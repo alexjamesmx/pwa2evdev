@@ -17,7 +17,6 @@ export const ImagesProvider = ({ children }) => {
 
   useEffect(() => {
     if (images.length > 0 && storedImages.length === 0) {
-      console.log("Setting stored images...");
       setStoredImages(images);
     }
   }, [images, storedImages]);
@@ -26,7 +25,6 @@ export const ImagesProvider = ({ children }) => {
     const fetchAndSetLibrary = async () => {
       if (user) {
         const { library, loading } = await fetchLibrary(user);
-        console.log("fetching library...");
         setLibrary(library);
         setL_loading(loading);
       } else {
@@ -38,9 +36,7 @@ export const ImagesProvider = ({ children }) => {
     fetchAndSetLibrary();
   }, [user, refresh]);
 
-  useEffect(() => {
-    console.log("library changed:", library);
-  }, [library]);
+  useEffect(() => {}, [library]);
 
   return (
     <ImagesContext.Provider

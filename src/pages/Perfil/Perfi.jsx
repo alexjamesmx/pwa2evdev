@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, lazy } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../customHooks/UserContext";
 import UserLibrary from "../../components/UserLibrary/UserLibrary";
+import { DrawerBottom } from "../../components/imageDetails/DrawerBottom";
 
 const DefaultPhoto = lazy(() => import("../../assets/user-default-120.webp"));
 
@@ -12,6 +13,10 @@ const Perfil = () => {
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
   const [showCategory, setShowCategory] = useState("saved");
+  const [openBottom, setOpenBottom] = useState(false);
+  const openDrawerBottom = () => setOpenBottom(true);
+  const closeDrawerBottom = () => setOpenBottom(false);
+  const [refreshLibrary, setRefreshLibrary] = useState(false);
 
   const handleEditProfile = () => {
     navigate("/editProfile");
@@ -27,6 +32,7 @@ const Perfil = () => {
         <div className="flex flex-col items-center">
           <div className="flex flex-row items-center my-8">
             <img
+              rel="preload"
               src={user.photoURL || DefaultPhoto}
               alt="Foto de perfil"
               className="rounded-full outline outline-4 outline-blue-gray-900 w-30 h-30"
@@ -63,7 +69,15 @@ const Perfil = () => {
             </h3>
           </div>
         </div>
-        <UserLibrary showCategory={showCategory} />
+        <UserLibrary
+          showCategory={showCategory}
+          openDrawerBottom={openDrawerBottom}
+          refreshLibrary={refreshLibrary}
+        />
+        <DrawerBottom
+          openBottom={openBottom}
+          closeDrawerBottom={closeDrawerBottom}
+        />
       </>
     </CategoryContext.Provider>
   );

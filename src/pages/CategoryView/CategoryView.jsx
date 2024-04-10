@@ -5,14 +5,20 @@ import React, {
   useCallback,
   memo,
 } from "react";
-import ListImages from "../../components/ListImages/ListImages";
+import ListCategoryImages from "../../components/ListImages/ListCategoryImages";
 import axios from "axios";
 import { ArrowLeftSquareFill } from "react-bootstrap-icons";
 import { ImagesContext } from "../../customHooks/ImagesContext";
+import { useNavigate } from "react-router";
 
 const CategoryView = memo(({ categorySelected }) => {
   const { library } = useContext(ImagesContext);
-  const [imageData, setImageData] = useState([]);
+  const [images, setImages] = useState([]);
+  const navigate = useNavigate();
+
+  const goBack = () => {
+    navigate(-1);
+  };
 
   const getCategoryData = useCallback(
     (category) => {
@@ -26,10 +32,9 @@ const CategoryView = memo(({ categorySelected }) => {
   );
 
   const fetchImages = useCallback(async () => {
-    console.log("fetching images category data ...");
     const data = getCategoryData(categorySelected);
     if (!data) {
-      setImageData([]);
+      setImages([]);
       return;
     }
 
@@ -42,15 +47,14 @@ const CategoryView = memo(({ categorySelected }) => {
       })
     );
 
-    console.log("response", response);
-    setImageData(response);
+    setImages(response);
   }, [categorySelected, getCategoryData]);
 
   useEffect(() => {
     fetchImages();
   }, [fetchImages, categorySelected, library]);
 
-  if (!imageData) {
+  if (!images) {
     return <div>Loading...</div>;
   }
 
@@ -59,15 +63,15 @@ const CategoryView = memo(({ categorySelected }) => {
       <div className="container mx-auto py-8">
         <div className="ms-2 flex mb-5">
           <ArrowLeftSquareFill
-            className="back-button pointer"
-            onClick={() => window.history.back()}
+            className="back-button cursor-pointer"
+            onClick={() => goBack()}
             width={40}
             height={40}
           />
           <h3 className="uppercase ms-6 self-center">{categorySelected}</h3>
         </div>
 
-        <ListImages images={imageData} />
+        <ListCategoryImages images={images} />
       </div>
     </>
   );

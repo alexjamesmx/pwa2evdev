@@ -8,8 +8,8 @@ import { Card } from "@material-tailwind/react";
 import axios from "axios";
 import { fetchPages } from "../../customHooks/fetchPages";
 import { Loading } from "../Loading";
-
-const ListImages = () => {
+import { optimizeImageUrl } from "../../utils";
+const InfiniteList = () => {
   const { user } = useContext(UserContext);
   const [imageData, setImageData] = useState(null);
   const [srcImage, setSrcImage] = useState(null);
@@ -21,7 +21,6 @@ const ListImages = () => {
   const fetchImages = async (page = 1) => {
     try {
       const total = 20;
-      console.log("page number: ", page);
       const response = await axios.get(
         `https://api.unsplash.com/photos?page=${page}&per_page=${total}&client_id=${process.env.ACCESS_KEY}`
       );
@@ -35,7 +34,6 @@ const ListImages = () => {
 
   const getImages = () => {
     if (!data) return;
-    console.log("setting images...");
     const response = [...data.map((image) => image)];
     setNextImages(response);
   };
@@ -47,36 +45,13 @@ const ListImages = () => {
   useMemo(() => {
     getImages();
   }, [data]);
+
   const handleUnregisteredUsers = () => {
     if (!user) {
-      toast.error("You must sign in to view image details.");
+      toast.error("You must be logged in to perform this action.");
       return false;
     }
     return true;
-  };
-
-  const optimizeImageUrl = (url) => {
-    let optimizedUrl = url;
-    // Function to replace the 'q' parameter with 'q=80'
-    if (optimizedUrl.includes("&fit")) {
-      optimizedUrl = optimizedUrl.replace(/(\\?|&)fit=[^&]*/, "&fit=crop");
-    } else {
-      optimizedUrl = optimizedUrl + "&fit=crop";
-    }
-
-    if (optimizedUrl.includes("?q")) {
-      optimizedUrl = optimizedUrl.replace(/(\\?|&)q=[^&]*/, "$1q=80");
-    }
-    if (optimizedUrl.includes("&h")) {
-      optimizedUrl = optimizedUrl.replace(/(\\?|&)q=[^&]*/, "&1h=300");
-    } else {
-      //add h=80 to the url
-      optimizedUrl = optimizedUrl + "&h=300";
-    }
-
-    // Function to replace the 'fm' parameter with 'fm=webp'
-    optimizedUrl = optimizedUrl.replace(/(\\?|&)fm=[^&]*/, "$1fm=webp");
-    return optimizedUrl;
   };
 
   const handleOpen = async (image, url) => {
@@ -87,10 +62,7 @@ const ListImages = () => {
   };
 
   const fetchMoreImages = async () => {
-    console.log("hey!  more images...", data.length, " page: ", page);
     const newImages = await fetchImages(page);
-    console.log("new images: ", newImages);
-    //concatenate to data
     const response = [...data, ...newImages];
     setData(response);
   };
@@ -122,14 +94,12 @@ const ListImages = () => {
     </div>
   );
 
-  console.log("data: ", nextImages.length);
-
   return (
     <>
       <ImageDetails
         handleOpen={handleOpen}
         open={open}
-        imageData={imageData}
+        image={imageData}
         srcImage={srcImage}
       />
       <InfiniteScroll
@@ -151,4 +121,4 @@ const ListImages = () => {
   );
 };
 
-export default ListImages;
+export default InfiniteList;
