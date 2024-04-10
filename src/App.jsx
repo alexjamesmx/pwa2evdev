@@ -67,7 +67,7 @@ const App = () => {
   }, []);
 
   return (
-    <BrowserRouter basename="/pwa2evdev/">
+    <BrowserRouter basename={import.meta.env.DEV ? "/" : "/pwa2evdev/"}>
       <UserProvider>
         <ImagesProvider>
           <ToastContainer />

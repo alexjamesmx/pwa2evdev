@@ -1,8 +1,11 @@
+// const baseURL = "/"
+const baseURL = "/pwa2evdev/";
+
 if (navigator.serviceWorker) {
-  navigator.serviceWorker.register("/sw.js");
+  navigator.serviceWorker.register(baseURL + "/sw.js");
 }
 if (navigator.serviceWorker) {
-  navigator.serviceWorker.register("/sw.js");
+  navigator.serviceWorker.register(baseURL + "/sw.js");
 }
 
 window.addEventListener("load", () => {
