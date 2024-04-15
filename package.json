@@ -1,6 +1,7 @@
 {
   "name": "ev2",
   "version": "0.1.0",
+  "homepage": "/ppwa2evdev/",
   "private": true,
   "dependencies": {
     "@material-tailwind/react": "^2.1.9",
