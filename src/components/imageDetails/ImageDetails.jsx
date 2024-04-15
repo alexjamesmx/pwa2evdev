@@ -62,17 +62,17 @@ const ImageDetails = memo(({ handleOpen, open, srcImage, image }) => {
     }
   }, [user, image]);
 
+  const getLibrariesNames = useCallback(() => {
+    let names = Object.keys(firebaseImageData);
+    names = names.filter((name) => name !== "saved");
+    setLibrariesNames(names);
+  }, [firebaseImageData]);
+
   useEffect(() => {
     if (firebaseImageData) {
       getLibrariesNames();
     }
-  }, [firebaseImageData]);
-
-  const getLibrariesNames = () => {
-    let names = Object.keys(firebaseImageData);
-    names = names.filter((name) => name !== "saved");
-    setLibrariesNames(names);
-  };
+  }, [firebaseImageData, getLibrariesNames]);
 
   const toggleSave = useCallback(async () => {
     try {
@@ -106,7 +106,7 @@ const ImageDetails = memo(({ handleOpen, open, srcImage, image }) => {
     } catch (error) {
       console.error("Error toggling save:", error);
     }
-  }, [user, image, srcImage, isFavorite]);
+  }, [user, image, srcImage, setRefresh]);
 
   const createLibrary = async () => {
     navigate("/profile");

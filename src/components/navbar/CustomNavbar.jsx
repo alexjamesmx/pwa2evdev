@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Navbar, Collapse, Button, IconButton } from "@material-tailwind/react";
+import { Navbar, Collapse, IconButton } from "@material-tailwind/react";
 import { Link, useLocation } from "react-router-dom";
 import { UserContext } from "../../customHooks/UserContext";
 import { auth } from "../../firebase";

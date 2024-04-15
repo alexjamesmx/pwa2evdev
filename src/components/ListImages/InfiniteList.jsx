@@ -1,4 +1,10 @@
-import React, { useState, useContext, useEffect, useMemo } from "react";
+import React, {
+  useState,
+  useContext,
+  useEffect,
+  useMemo,
+  useCallback,
+} from "react";
 import ImageDetails from "../imageDetails/ImageDetails";
 import { toast } from "react-toastify";
 import { UserContext } from "../../customHooks/UserContext";
@@ -18,33 +24,37 @@ const InfiniteList = () => {
   const [nextImages, setNextImages] = useState([]);
   const { isOnline } = useNetworkCheck();
   const key = process.env.REACT_APP_ACCESS_KEY;
-  const fetchImages = async (page = 1) => {
-    try {
-      const total = 20;
-      const response = await axios.get(
-        `https://api.unsplash.com/photos?page=${page}&per_page=${total}&client_id=${key}`
-      );
-      setData(response.data);
-      setPage(page + 1);
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching images:", error);
-    }
-  };
 
-  const getImages = () => {
+  const fetchImages = useCallback(
+    async (page = 1) => {
+      try {
+        const total = 20;
+        const response = await axios.get(
+          `https://api.unsplash.com/photos?page=${page}&per_page=${total}&client_id=${key}`
+        );
+        setData(response.data);
+        setPage(page + 1);
+        return response.data;
+      } catch (error) {
+        console.error("Error fetching images:", error);
+      }
+    },
+    [key]
+  );
+
+  const getImages = useCallback(() => {
     if (!data) return;
     const response = [...data.map((image) => image)];
     setNextImages(response);
-  };
+  }, [data]);
 
   useEffect(() => {
     fetchImages();
-  }, []);
+  }, [fetchImages]);
 
   useMemo(() => {
     getImages();
-  }, [data]);
+  }, [getImages]);
 
   const handleUnregisteredUsers = () => {
     if (!user) {
@@ -88,7 +98,7 @@ const InfiniteList = () => {
               srcSet={optimizeImageUrl(image.urls?.thumb)}
               src={optimizeImageUrl(image.urls?.thumb)}
               alt={image.alt_description || "Image from Unsplash"}
-              className="object-fill transform hover:scale-105 transition-transform duration-300 "
+              className="object-fill transform hover:scale-105 transition-transform duration-300 rounded-md"
               height={300}
               width={200}
             />

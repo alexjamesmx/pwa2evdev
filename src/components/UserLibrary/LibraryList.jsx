@@ -41,7 +41,13 @@ const LibraryList = ({
           >
             <h3 className="font-bold">{item.category}</h3>
             {item.images[0]?.url ? (
-              <img src={item.images[0]?.url} width={200} height={200} />
+              <img
+                src={item.images[0]?.url}
+                width={200}
+                height={200}
+                alt={`${item.category}`}
+                className="rounded object-cover w-full h-full"
+              />
             ) : (
               <>Empty category</>
             )}
