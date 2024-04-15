@@ -85,8 +85,9 @@ const App = () => {
 
     return unsubscribe;
   }, []);
+
   return (
-    <BrowserRouter basename={"/"}>
+    <BrowserRouter basename={"/pwa2evdev/"}>
       <NetworkProvider>
         <UserProvider>
           <ImagesProvider>
