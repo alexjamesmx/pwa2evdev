@@ -20,16 +20,16 @@ self.addEventListener("install", (event) => {
   console.log("installing sw. ..");
   const cachePromise = caches.open(CACHE_STATIC).then((cache) => {
     return cache.addAll([
-      "/",
-      "/index.html",
-      "/sw.js",
-      "/js/sw-utils.js",
-      "manifest.json",
-      "favicon.ico",
-      "firebase-messaging.sw.js",
-      "/pages/offline.html",
-      "not-found.jpeg",
-      "app.js",
+      "/pwa2evdev/",
+      "/pwa2evdev/index.html",
+      "/pwa2evdev/sw.js",
+      "/pwa2evdev/js/sw-utils.js",
+      "/pwa2evdev/manifest.json",
+      "/pwa2evdev/favicon.ico",
+      "/pwa2evdev/firebase-messaging.sw.js",
+      "/pwa2evdev/pages/offline.html",
+      "/pwa2evdev/not-found.jpeg",
+      "/pwa2evdev/app.js",
     ]);
   });
   const cacheInmutable = caches.open(CACHE_INMUTABLE).then((cache) => {
