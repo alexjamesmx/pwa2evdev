@@ -35,11 +35,6 @@ const EditarPerfil = ({ open, setOpen, user, setUser }) => {
     setNewDisplayName(e.target.value);
   };
 
-  const h = () => {
-    console.log("here");
-    setOpen((cur) => !cur);
-  };
-
   return (
     <Dialog
       size="xs"
