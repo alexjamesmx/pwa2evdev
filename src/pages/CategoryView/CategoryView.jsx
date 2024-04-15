@@ -41,7 +41,7 @@ const CategoryView = memo(({ categorySelected }) => {
     const response = await Promise.all(
       data.images.map(async (image) => {
         const res = await axios.get(
-          `https://api.unsplash.com/photos/${image.id}?client_id=${process.env.ACCESS_KEY}`
+          `https://api.unsplash.com/photos/${image.id}?client_id=${process.env.REACT_APP_ACCESS_KEY}`
         );
         return res.data;
       })

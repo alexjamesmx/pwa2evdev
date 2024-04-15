@@ -36,6 +36,7 @@ const Perfil = () => {
 
   useEffect(() => {
     const loadUserData = async () => {
+      console.log("Perfil setting user data...");
       if (user) {
         const db = getFirestore();
         const userDocRef = doc(db, "users", user.uid);

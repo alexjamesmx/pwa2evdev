@@ -16,7 +16,6 @@ const EditarPerfil = ({ open, setOpen, user, setUser }) => {
   const handleSubmit = async () => {
     try {
       if (newDisplayName === "") {
-        console.log("ere");
         toast.error("Username cannot be empty");
         setOpen((cur) => !cur);
         return;

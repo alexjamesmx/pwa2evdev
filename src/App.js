@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense, useEffect } from "react";
 import {
   useRoutes,
   BrowserRouter,
@@ -10,12 +10,15 @@ import { UserProvider } from "./customHooks/UserContext";
 import { ImagesProvider } from "./customHooks/ImagesContext";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
+import { NetworkProvider } from "./customHooks/network-context";
+import OfflineFallback from "./OfflineFallback";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./firebase";
 
 const Home = lazy(() => import("./pages/Home/Home"));
 const Perfil = lazy(() => import("./pages/Perfil/Perfi"));
 const Login = lazy(() => import("./pages/Login/Login"));
 const NotFound = lazy(() => import("./pages/NotFound"));
-const EditarPerfil = lazy(() => import("./pages/Perfil/EditarPerfil"));
 const CategoryView = lazy(() => import("./pages/CategoryView/CategoryView"));
 
 const getInitialAuthState = () => {
@@ -54,6 +57,10 @@ const AppRoutes = React.memo(({ isUserLoggedIn }) => {
       element: <Home />,
     },
     {
+      path: "/offline",
+      element: <OfflineFallback />,
+    },
+    {
       path: "*",
       element: <NotFound />,
     },
@@ -61,20 +68,38 @@ const AppRoutes = React.memo(({ isUserLoggedIn }) => {
 });
 
 const App = () => {
-  const isUserLoggedIn = getInitialAuthState();
+  const [isUserLoggedInState, setIsUserLoggedInState] = React.useState(
+    getInitialAuthState()
+  );
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        localStorage.setItem("authState", JSON.stringify(true));
+        setIsUserLoggedInState(true);
+      } else {
+        localStorage.removeItem("authState");
+        setIsUserLoggedInState(false);
+      }
+    });
+
+    return unsubscribe;
+  }, []);
   return (
     <BrowserRouter basename={"/"}>
-      <UserProvider>
-        <ImagesProvider>
-          <Suspense fallback={<div>Loading...</div>}>
-            <ToastContainer />
+      <NetworkProvider>
+        <UserProvider>
+          <ImagesProvider>
+            <Suspense fallback={<div>Loading...</div>}>
+              <ToastContainer />
 
-            <CustomNavbar isUserLoggedIn={isUserLoggedIn}>
-              <AppRoutes isUserLoggedIn={isUserLoggedIn} />
-            </CustomNavbar>
-          </Suspense>
-        </ImagesProvider>
-      </UserProvider>
+              <CustomNavbar isUserLoggedIn={isUserLoggedInState}>
+                <AppRoutes isUserLoggedIn={isUserLoggedInState} />
+              </CustomNavbar>
+            </Suspense>
+          </ImagesProvider>
+        </UserProvider>
+      </NetworkProvider>
     </BrowserRouter>
   );
 };

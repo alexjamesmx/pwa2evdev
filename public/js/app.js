@@ -21,6 +21,7 @@ function isOnline() {
   if (navigator.onLine) {
     console.log("Conectado a internet.");
   } else {
+    alert("No hay conexión a internet, ");
     console.log("No hay conexión a internet, inténtalo de nuevo más tarde.");
   }
 }

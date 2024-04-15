@@ -112,7 +112,6 @@ const ImageDetails = memo(({ handleOpen, open, srcImage, image }) => {
     navigate("/profile");
   };
 
-  console.log(image);
   return (
     <>
       <Dialog

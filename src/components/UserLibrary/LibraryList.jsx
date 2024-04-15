@@ -30,8 +30,6 @@ const LibraryList = ({
     );
   }
 
-  console.log(libraries);
-
   return (
     <div className="flex flex-col items-center">
       <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">

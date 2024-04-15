@@ -20,8 +20,6 @@ export const DrawerBottom = ({ openBottom, closeDrawerBottom }) => {
   const [newLibrary, setNewLibrary] = useState(null);
 
   const postLibrary = async () => {
-    console.log("Creating library");
-
     if (!newLibrary || newLibrary === "")
       toast.error("Library name is required");
 

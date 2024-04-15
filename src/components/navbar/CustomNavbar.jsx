@@ -5,14 +5,20 @@ import { UserContext } from "../../customHooks/UserContext";
 import { auth } from "../../firebase";
 import Logo from "../../assets/logos/logo40.svg";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { onMessage } from "firebase/messaging";
+import { messaging } from "../../firebase";
+
 function CustomNavbar({ children }) {
   const { user, isUserLoggedIn, setIsUserLoggedIn } = useContext(UserContext);
   const location = useLocation();
   const navigate = useNavigate();
 
-  const handleLoginClicked = () => {
-    navigate("/login");
-  };
+  onMessage(messaging, (payload) => {
+    console.log("onMessage", payload);
+    //toast title and body
+    toast.info(`${payload.notification.title}: ${payload.notification.body}`);
+  });
 
   const logout = () => {
     console.log("Logging out...");
@@ -34,81 +40,77 @@ function CustomNavbar({ children }) {
     );
   }, []);
 
-  const navList = isUserLoggedIn ? (
+  const navList = (
     <ul className="flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
-      <Link to="/profile" className="nav-link-custom">
-        <img
-          src={user?.photoURL || "../../assets/user-default-120.webp"}
-          alt="foto de perfil"
-          width="50"
-          height="50"
-          className="rounded-full cursor-pointer"
-        />
-      </Link>
+      {isUserLoggedIn && (
+        <>
+          <Link to="/profile" className="nav-link-custom">
+            <img
+              src={user?.photoURL || "../../assets/user-default-120.webp"}
+              alt="foto de perfil"
+              width="50"
+              height="50"
+              className={`rounded-full cursor-pointer ${
+                isActive("/profile") ? "ring-4 ring-deep-orange-900" : ""
+              }`}
+            />
+          </Link>
+        </>
+      )}
+
       <li>
         <Link
-          to="/profile"
-          className={`p-1 font-normal items-center cursor-pointer ${
-            isActive("/profile")
-              ? "bg-blue-gray-900 text-white rounded px-4"
-              : ""
+          to="/"
+          className={`p-1 font-normal items-center cursor-pointer text-black ${
+            isActive("/") ? "bg-deep-orange-900 text-white rounded px-4" : ""
           }`}
         >
-          Profile
+          Home
         </Link>
       </li>
+      {!isUserLoggedIn ? (
+        <li>
+          <Link
+            to="/login"
+            className={`p-1 font-normal items-center cursor-pointer text-black ${
+              isActive("/login")
+                ? "bg-deep-orange-900 text-white rounded px-4"
+                : ""
+            }`}
+          >
+            Log In
+          </Link>
+        </li>
+      ) : (
+        <li>
+          <Link
+            onClick={logout}
+            className={`p-1 font-normal items-center cursor-pointer text-black ${
+              isActive("/login")
+                ? "bg-blue-gray-900 text-white rounded px-4"
+                : ""
+            }`}
+          >
+            Logout
+          </Link>
+        </li>
+      )}
     </ul>
-  ) : (
-    <></>
   );
 
   return (
     <div>
       <Navbar className="sticky top-0 z-10 h-max max-w-full rounded-none px-4 py-2 lg:px-8 lg:py-4">
         <div className="flex items-center justify-between text-blue-gray-900 mx-14">
-          <Link
-            to="/"
-            className="mr-4 cursor-pointer py-1.5 font-medium flex items-center gap-2"
-          >
-            <img src={Logo} alt="Logo" width="40" height="40" />
-            <span
-              className={`${
-                isActive("/") ? "bg-blue-gray-900 text-white rounded px-4" : ""
-              }`}
-            >
-              Home
-            </span>
-          </Link>
+          <div className="mr-4 cursor-pointer py-1.5 font-medium flex items-center gap-2">
+            <Link to="/">
+              {" "}
+              <img src={Logo} alt="Logo" width="40" height="40" />
+            </Link>
+          </div>
           <div className="flex items-center gap-4">
             <div className="hidden lg:block">{navList}</div>
-            {isUserLoggedIn ? (
-              <div className="flex items-center gap-x-1"></div>
-            ) : isActive("/login") ? (
-              <></>
-            ) : (
-              <Button
-                variant="text"
-                size="sm"
-                className="hidden lg:inline-block"
-                onClick={() => handleLoginClicked()}
-              >
-                <span>Log In</span>
-              </Button>
-            )}
-            {isUserLoggedIn ? (
-              <div className="flex items-center gap-x-1">
-                <Button
-                  variant="text"
-                  size="sm"
-                  className="hidden lg:inline-block"
-                  onClick={() => logout()}
-                >
-                  <span>Logout</span>
-                </Button>
-              </div>
-            ) : (
-              <></>
-            )}
+
             <IconButton
               variant="text"
               className="ml-auto h-6 w-6 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden"
@@ -148,31 +150,12 @@ function CustomNavbar({ children }) {
             </IconButton>
           </div>
         </div>
-        <Collapse open={openNav}>
+
+        <Collapse
+          open={openNav}
+          className="flex justify-center flex-col items-center"
+        >
           {navList}
-          <div className="flex items-center gap-x-1">
-            {!isUserLoggedIn ? (
-              <Button
-                fullWidth
-                variant="text"
-                size="sm"
-                className=""
-                onClick={() => handleLoginClicked()}
-              >
-                <span>Log In</span>
-              </Button>
-            ) : (
-              <Button
-                fullWidth
-                variant="text"
-                size="sm"
-                className=""
-                onClick={() => logout()}
-              >
-                <span>Logout</span>
-              </Button>
-            )}
-          </div>
         </Collapse>
       </Navbar>
       <div className="container mx-auto">{children}</div>

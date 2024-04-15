@@ -24,7 +24,6 @@ const UserLibrary = memo(({ showCategory, openDrawerBottom }) => {
     Object.keys(library).length > 0
       ? library.filter((item) => item.category === "saved")
       : [];
-  console.log(library);
   const otherLibraries =
     Object.keys(library).length > 0
       ? library.filter((item) => item.category !== "saved")

@@ -7,6 +7,7 @@ import { Card } from "@material-tailwind/react";
 import axios from "axios";
 import { Loading } from "../Loading";
 import { optimizeImageUrl } from "../../utils";
+import { useNetworkCheck } from "../../customHooks/network-context";
 const InfiniteList = () => {
   const { user } = useContext(UserContext);
   const [imageData, setImageData] = useState(null);
@@ -15,7 +16,7 @@ const InfiniteList = () => {
   const [data, setData] = useState(null);
   const [page, setPage] = useState(1);
   const [nextImages, setNextImages] = useState([]);
-  const [offline, setOffline] = useState(false);
+  const { isOnline } = useNetworkCheck();
   const key = process.env.REACT_APP_ACCESS_KEY;
   const fetchImages = async (page = 1) => {
     try {
@@ -28,7 +29,6 @@ const InfiniteList = () => {
       return response.data;
     } catch (error) {
       console.error("Error fetching images:", error);
-      setOffline(true);
     }
   };
 
@@ -70,32 +70,33 @@ const InfiniteList = () => {
   if (!nextImages || nextImages.length === 0) {
     return <Loading />;
   }
-  console.log();
 
-  const renderImages = () => (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 justify-items-center">
-      {nextImages.map((image, index) => (
-        <Card
-          key={index}
-          className="cursor-pointer transition-opacity hover:opacity-90"
-          style={{ height: 300, width: 200 }}
-          onClick={() => handleOpen(image, optimizeImageUrl(image.urls.thumb))}
-        >
-          <img
-            rel="preload"
-            srcSet={optimizeImageUrl(image.urls.thumb)}
-            src={optimizeImageUrl(image.urls.thumb)}
-            alt={image.alt_description || "Image from Unsplash"}
-            className="object-fill transform hover:scale-105 transition-transform duration-300 "
-            height={300}
-            width={200}
-          />
-        </Card>
-      ))}
-    </div>
-  );
-
-  console.log("infinite list ", nextImages);
+  const renderImages = () => {
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 justify-items-center">
+        {nextImages.map((image, index) => (
+          <Card
+            key={index}
+            className="cursor-pointer transition-opacity hover:opacity-90"
+            style={{ height: 300, width: 200 }}
+            onClick={() =>
+              handleOpen(image, optimizeImageUrl(image.urls?.thumb))
+            }
+          >
+            <img
+              rel="preload"
+              srcSet={optimizeImageUrl(image.urls?.thumb)}
+              src={optimizeImageUrl(image.urls?.thumb)}
+              alt={image.alt_description || "Image from Unsplash"}
+              className="object-fill transform hover:scale-105 transition-transform duration-300 "
+              height={300}
+              width={200}
+            />
+          </Card>
+        ))}
+      </div>
+    );
+  };
 
   return (
     <>
@@ -114,12 +115,12 @@ const InfiniteList = () => {
         next={() => {
           fetchMoreImages();
         }}
-        hasMore={!offline}
+        hasMore={isOnline}
         loader={<Loading />}
         endMessage={
-          <p style={{ textAlign: "center" }}>
+          <p className="py-10 text-xl justify-center text-center">
             <b>
-              {offline ? "check your internet connection" : "No more images"}
+              {!isOnline ? "check your internet connection" : "No more images"}
             </b>
           </p>
         }

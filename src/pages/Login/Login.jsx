@@ -3,11 +3,18 @@ import { useNavigate } from "react-router-dom";
 import { signInWithGooglePopup } from "../../firebase";
 import { collection, doc, getFirestore, setDoc } from "firebase/firestore";
 import googleIcon from "../../assets/logos/google40.svg";
+import { useNetworkCheck } from "../../customHooks/network-context";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { isOnline } = useNetworkCheck();
 
   const logGoogleUser = async () => {
+    if (!isOnline) {
+      navigate("/offline");
+      return;
+    }
+
     try {
       const response = await signInWithGooglePopup();
       const user = response.user;
@@ -24,6 +31,10 @@ const Login = () => {
       navigate("/");
     } catch (error) {
       console.error("Error logging in:", error);
+      //if network error, show offline page
+      // if (error.code === "auth/network-request-failed") {
+      //   navigate("/offline");
+      // }
       // Add user-friendly error handling here if needed
     }
   };
