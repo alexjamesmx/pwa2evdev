@@ -1,12 +1,6 @@
 import React, { useContext, useState } from "react";
 
-import {
-  Drawer,
-  Typography,
-  IconButton,
-  Button,
-  Input,
-} from "@material-tailwind/react";
+import { Drawer, IconButton, Button, Input } from "@material-tailwind/react";
 
 import {
   getFirestore,
@@ -26,6 +20,7 @@ export const DrawerBottom = ({ openBottom, closeDrawerBottom }) => {
   const { user } = useContext(UserContext);
   const { setRefresh: setRefreshLibrary } = useContext(ImagesContext);
   const [newLibrary, setNewLibrary] = useState(null);
+
   const postLibrary = async () => {
     console.log("Creating library");
 
@@ -73,9 +68,7 @@ export const DrawerBottom = ({ openBottom, closeDrawerBottom }) => {
       className="p-4"
     >
       <div className="mb-6 flex items-center justify-center">
-        <Typography variant="h5" color="blue-gray">
-          Give a name to your library
-        </Typography>
+        <p>Give a name to your library</p>
         <IconButton
           variant="text"
           color="blue-gray"

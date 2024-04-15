@@ -21,24 +21,24 @@ self.addEventListener("install", (event) => {
   const cachePromise = caches.open(CACHE_STATIC).then((cache) => {
     return cache.addAll([
       "/",
-      // "/index.html",
-      // "/sw.js",
-      // "/js/sw-utils.js",
-      // "manifest.json",
-      // "favicon.ico",
-      // "firebase-messaging.sw.js",
-      // "/pages/offline.html",
-      // "not-found.jpeg",
-      // "app.js",
+      "/index.html",
+      "/sw.js",
+      "/js/sw-utils.js",
+      "manifest.json",
+      "favicon.ico",
+      "firebase-messaging.sw.js",
+      "/pages/offline.html",
+      "not-found.jpeg",
+      "app.js",
     ]);
   });
   const cacheInmutable = caches.open(CACHE_INMUTABLE).then((cache) => {
-    // return cache.addAll([]);
+    return cache.addAll([]);
   });
   event.waitUntil(Promise.all([cachePromise, cacheInmutable]));
 });
 self.addEventListener("activate", (event) => {
-  console.log("SW: esta siendo activando...");
+  console.log("SW: activado");
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
@@ -57,29 +57,36 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
-  // Cache with network fallback
+  if (!event.request.url.includes("http")) {
+    console.log("No se puede descargar");
+    return;
+  }
+
+  let fetchResponse;
   if (event.request.method === "GET") {
-    const respuesta = caches.match(event.request).then((response) => {
-      if (response) return response;
-      // Si no existe el archivo, verifica si hay conexión
-      if (!navigator.onLine) {
-        // Si no hay conexión, responde con la imagen not-found.jpg desde el cache estático
-        return caches.match("/not-found.jpg");
-      }
-      // Si hay conexión, descarga el archivo
-      return fetch(event.request).then((newResponse) => {
-        caches.open(CACHE_DYNAMIC).then((cache) => {
-          cache.put(event.request, newResponse);
-          limpiarCache(CACHE_DYNAMIC, CACHE_DYNAMIC_LIMIT);
-        });
-        return newResponse.clone();
+    fetchResponse = caches.match(event.request).then((res) => {
+      if (res) return res; //return from cache
+      // fetch from the internet
+
+      console.log("No existe en cache", event.request.url);
+      return fetch(event.request).then((newRes) => {
+        if (newRes.ok) {
+          caches.open(CACHE_DYNAMIC).then((cache) => {
+            cache.put(event.request, newRes.clone());
+            limpiarCache(CACHE_DYNAMIC, CACHE_DYNAMIC_LIMIT);
+          });
+          return newRes.clone();
+        }
+
+        return newRes;
       });
     });
-    event.respondWith(respuesta);
-  } else {
-    // Si no es una solicitud GET, simplemente pasa la solicitud al servidor
-    event.respondWith(fetch(event.request));
+  } else if (event.request.method === "POST") {
+    console.log("POST request: ", event.request.url);
+    fetchResponse = fetch(event.request);
   }
+
+  event.respondWith(fetchResponse);
 });
 
 // Event listeners para manejar la conexión

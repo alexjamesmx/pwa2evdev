@@ -20,12 +20,15 @@ const UserLibrary = memo(({ showCategory, openDrawerBottom }) => {
     return <Loading />;
   }
 
-  if (!library) {
-    return <div>Error loading library</div>;
-  }
-
-  const savedLibrary = library.filter((item) => item.category === "saved");
-  const otherLibraries = library.filter((item) => item.category !== "saved");
+  const savedLibrary =
+    Object.keys(library).length > 0
+      ? library.filter((item) => item.category === "saved")
+      : [];
+  console.log(library);
+  const otherLibraries =
+    Object.keys(library).length > 0
+      ? library.filter((item) => item.category !== "saved")
+      : [];
 
   return (
     <>

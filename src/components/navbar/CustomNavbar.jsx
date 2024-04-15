@@ -18,7 +18,7 @@ function CustomNavbar({ children }) {
     console.log("Logging out...");
     auth.signOut();
     setIsUserLoggedIn(false);
-
+    localStorage.removeItem("authState");
     navigate("/login");
   };
 

@@ -70,7 +70,7 @@ const InfiniteList = () => {
   }
 
   const renderImages = () => (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 ">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 justify-items-center">
       {nextImages.map((image, index) => (
         <Card
           key={index}
@@ -94,12 +94,16 @@ const InfiniteList = () => {
 
   return (
     <>
-      <ImageDetails
-        handleOpen={handleOpen}
-        open={open}
-        image={imageData}
-        srcImage={srcImage}
-      />
+      {imageData ? (
+        <ImageDetails
+          handleOpen={handleOpen}
+          open={open}
+          image={imageData}
+          srcImage={srcImage}
+        />
+      ) : (
+        <></>
+      )}
       <InfiniteScroll
         dataLength={nextImages ? nextImages.length : 0}
         next={() => {
@@ -114,7 +118,7 @@ const InfiniteList = () => {
         }
       >
         {renderImages()}
-      </InfiniteScroll>
+      </InfiniteScroll>{" "}
     </>
   );
 };

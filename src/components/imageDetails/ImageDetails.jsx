@@ -13,7 +13,6 @@ import {
   DialogFooter,
   Avatar,
   IconButton,
-  Typography,
   Select,
   Option,
 } from "@material-tailwind/react";
@@ -113,10 +112,20 @@ const ImageDetails = memo(({ handleOpen, open, srcImage, image }) => {
     navigate("/profile");
   };
 
+  console.log(image);
   return (
     <>
-      <Dialog size="sm" open={open} handler={handleOpen}>
-        <DialogHeader className="justify-between">
+      <Dialog
+        size="sm"
+        open={open}
+        handler={handleOpen}
+        animate={{
+          mount: { scale: 1, y: 0 },
+          unmount: { scale: 0.9, y: -100 },
+        }}
+        className="min-w-52"
+      >
+        <DialogHeader className="justify-between md:sm flex-col md:flex-row">
           <div className="flex items-center gap-3">
             <Avatar
               size="sm"
@@ -125,23 +134,15 @@ const ImageDetails = memo(({ handleOpen, open, srcImage, image }) => {
               src={image?.user?.profile_image.small}
             />
             <div className="-mt-px flex flex-col">
-              <Typography
-                variant="small"
-                color="blue-gray"
-                className="font-medium"
-              >
+              <p variant="small" color="blue-gray" className="font-medium">
                 {image?.user?.first_name}
-              </Typography>
-              <Typography
-                variant="small"
-                color="gray"
-                className="text-xs font-normal"
-              >
+              </p>
+              <p variant="small" color="gray" className="text-xs font-normal">
                 {image?.user?.username}
-              </Typography>
+              </p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 md:sm flex-col md:flex-row">
             <IconButton
               variant="text"
               size="sm"
@@ -180,27 +181,30 @@ const ImageDetails = memo(({ handleOpen, open, srcImage, image }) => {
         <DialogBody>
           <img
             alt={image?.alt_description}
-            className="h-[48rem] w-full rounded-lg object-cover object-center"
+            className="rounded-lg object-contain object-center max-h-96 w-full "
             src={srcImage}
           />
         </DialogBody>
         <DialogFooter className="justify-between">
+          <p>
+            {image?.alt_description ? image?.alt_description : "No description"}
+          </p>
           <div className="flex items-center gap-16">
             <div>
-              <Typography variant="small" color="gray" className="font-normal">
+              <p variant="small" color="gray" className="font-bold ">
                 Views
-              </Typography>
-              <Typography color="blue-gray" className="font-medium">
-                {image?.views}
-              </Typography>
+              </p>
+              <p color="blue-gray" className="font-medium">
+                {image?.views ? image?.views : 1}
+              </p>
             </div>
             <div>
-              <Typography variant="small" color="gray" className="font-normal">
+              <p variant="small" color="gray" className="font-bold">
                 Likes
-              </Typography>
-              <Typography color="blue-gray" className="font-medium">
-                {image?.likes}
-              </Typography>
+              </p>
+              <p color="blue-gray" className="font-medium">
+                {image?.likes ? image?.likes : 0}
+              </p>
             </div>
           </div>
           <Button

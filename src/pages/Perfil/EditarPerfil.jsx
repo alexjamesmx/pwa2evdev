@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardBody,
   CardFooter,
-  Typography,
+  p,
   Input,
   Checkbox,
 } from "@material-tailwind/react";
@@ -16,8 +16,14 @@ import { toast } from "react-toastify";
 const EditarPerfil = ({ open, setOpen, user, setUser }) => {
   const [newDisplayName, setNewDisplayName] = useState("");
 
-  const handleOpen = async () => {
+  const handleSubmit = async () => {
     try {
+      if (newDisplayName === "") {
+        console.log("ere");
+        toast.error("Username cannot be empty");
+        setOpen((cur) => !cur);
+        return;
+      }
       await updateUserDisplayNameInDatabase(user.uid, newDisplayName);
 
       setUser({ ...user, displayName: newDisplayName });
@@ -32,25 +38,26 @@ const EditarPerfil = ({ open, setOpen, user, setUser }) => {
     setNewDisplayName(e.target.value);
   };
 
+  const h = () => {
+    console.log("here");
+    setOpen((cur) => !cur);
+  };
+
   return (
     <Dialog
       size="xs"
       open={open}
-      handler={handleOpen}
+      handler={() => setOpen((cur) => !cur)}
       className="bg-transparent shadow-none"
     >
       <Card className="mx-auto w-full max-w-[24rem]">
         <CardBody className="flex flex-col gap-4">
-          <Typography variant="h4" color="blue-gray">
+          <p variant="h4" color="blue-gray">
             Update profile
-          </Typography>
-          <Typography
-            className="mb-3 font-normal"
-            variant="paragraph"
-            color="gray"
-          >
+          </p>
+          <p className="mb-3 font-normal" variant="paragraph" color="gray">
             Edit Username
-          </Typography>
+          </p>
           <Input
             label="Username"
             size="lg"
@@ -59,7 +66,7 @@ const EditarPerfil = ({ open, setOpen, user, setUser }) => {
           />
         </CardBody>
         <CardFooter className="pt-0">
-          <Button variant="gradient" onClick={handleOpen} fullWidth>
+          <Button variant="gradient" onClick={handleSubmit} fullWidth>
             Change
           </Button>
         </CardFooter>

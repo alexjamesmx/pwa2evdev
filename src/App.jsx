@@ -19,6 +19,12 @@ const Login = lazy(() => import("./pages/Login/Login"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const EditarPerfil = lazy(() => import("./pages/Perfil/EditarPerfil"));
 const CategoryView = lazy(() => import("./pages/CategoryView/CategoryView"));
+
+const getInitialAuthState = () => {
+  const storedAuthState = localStorage.getItem("authState");
+  return storedAuthState ? JSON.parse(storedAuthState) : false;
+};
+
 const AppRoutes = React.memo(({ isUserLoggedIn }) => {
   const [searchParams] = useSearchParams();
   const category = searchParams.get("category");
@@ -26,11 +32,19 @@ const AppRoutes = React.memo(({ isUserLoggedIn }) => {
   return useRoutes([
     {
       path: "/profile",
-      element: isUserLoggedIn ? <Perfil /> : <Login />,
+      element: isUserLoggedIn ? (
+        <Perfil />
+      ) : (
+        <Navigate to="/login" replace={true} />
+      ),
     },
     {
       path: "/editProfile",
-      element: <EditarPerfil />,
+      element: isUserLoggedIn ? (
+        <EditarPerfil />
+      ) : (
+        <Navigate to="/login" replace={true} />
+      ),
     },
     {
       path: "/library",
@@ -38,12 +52,12 @@ const AppRoutes = React.memo(({ isUserLoggedIn }) => {
         isUserLoggedIn && category ? (
           <CategoryView categorySelected={category} />
         ) : (
-          <Login />
+          <Navigate to="/login" replace={true} />
         ),
     },
     {
       path: "/login",
-      element: isUserLoggedIn ? <Navigate to="/" /> : <Login />,
+      element: isUserLoggedIn ? <Navigate to="/" replace={true} /> : <Login />,
     },
     {
       path: "/",
@@ -57,29 +71,22 @@ const AppRoutes = React.memo(({ isUserLoggedIn }) => {
 });
 
 const App = () => {
-  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setIsUserLoggedIn(currentUser ? true : false);
-    });
-    return unsubscribe;
-  }, []);
+  const isUserLoggedIn = getInitialAuthState();
 
   console.log("route basename is: ", import.meta.env.DEV);
   return (
-    <BrowserRouter basename={import.meta.env.DEV ? "/" : "/pwa2evdev/"}>
-      <UserProvider>
-        <ImagesProvider>
+    <UserProvider>
+      <ImagesProvider>
+        <Suspense fallback={<div>Loading...</div>}>
           <ToastContainer />
-          <Suspense fallback={<div>Loading...</div>}>
+          <BrowserRouter basename={import.meta.env.DEV ? "/" : "/pwa2evdev/"}>
             <CustomNavbar isUserLoggedIn={isUserLoggedIn}>
               <AppRoutes isUserLoggedIn={isUserLoggedIn} />
             </CustomNavbar>
-          </Suspense>
-        </ImagesProvider>
-      </UserProvider>
-    </BrowserRouter>
+          </BrowserRouter>
+        </Suspense>
+      </ImagesProvider>
+    </UserProvider>
   );
 };
 

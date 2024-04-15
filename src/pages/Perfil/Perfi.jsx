@@ -50,6 +50,9 @@ const Perfil = () => {
     loadUserData();
   }, [user]);
 
+  if (!user) {
+    return <div>Loading...</div>;
+  }
   return (
     <CategoryContext.Provider value={{ showCategory, toggleCategory }}>
       <>

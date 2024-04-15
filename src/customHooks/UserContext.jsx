@@ -9,8 +9,14 @@ const UserProvider = ({ children }) => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      console.log("UserContext: onAuthStateChanged", currentUser);
       setUser(currentUser);
       setIsUserLoggedIn(currentUser ? true : false);
+      if (currentUser) {
+        localStorage.setItem("authState", JSON.stringify(true));
+      } else {
+        localStorage.removeItem("authState");
+      }
     });
 
     return unsubscribe;
