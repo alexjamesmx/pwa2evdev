@@ -69,6 +69,12 @@ self.addEventListener("fetch", (event) => {
       // fetch from the internet
 
       console.log("No existe en cache", event.request.url);
+
+      //if offline
+      if (!navigator.onLine) {
+        console.log("Offline", event.request.url);
+        alert("No hay conexión a internet, inténtalo de nuevo más tarde.");
+      }
       return fetch(event.request).then((newRes) => {
         if (newRes.ok) {
           caches.open(CACHE_DYNAMIC).then((cache) => {
@@ -77,7 +83,6 @@ self.addEventListener("fetch", (event) => {
           });
           return newRes.clone();
         }
-
         return newRes;
       });
     });
