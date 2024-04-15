@@ -6,7 +6,7 @@ const CACHE_DYNAMIC = "dynamic-v0";
 const CACHE_STATIC = "static-v0";
 const CACHE_INMUTABLE = "inmutable-v0";
 
-const CACHE_DYNAMIC_LIMIT = 150;
+const CACHE_DYNAMIC_LIMIT = 151;
 
 self.addEventListener("install", (event) => {
   console.log("SW: static cache installed");
