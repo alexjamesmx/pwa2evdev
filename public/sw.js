@@ -9,7 +9,7 @@ const CACHE_INMUTABLE = "inmutable-v0";
 const CACHE_DYNAMIC_LIMIT = 151;
 
 self.addEventListener("install", (event) => {
-  console.log("SW: static cache installed");
+  console.log("SW: static cache installed.");
   const cachePromise = caches.open(CACHE_STATIC).then((cache) => {
     return cache.addAll([
       "/pwa2evdev/",
