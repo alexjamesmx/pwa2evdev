@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useEffect } from "react";
+import React, { lazy, Suspense, useCallback, useEffect, useState } from "react";
 import {
   useRoutes,
   BrowserRouter,
@@ -12,8 +12,9 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 import { NetworkProvider } from "./customHooks/network-context";
 import OfflineFallback from "./OfflineFallback";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "./firebase";
+
+import { getToken } from "firebase/messaging";
+import { messaging } from "./firebase";
 
 const Home = lazy(() => import("./pages/Home/Home"));
 const Perfil = lazy(() => import("./pages/Perfil/Perfi"));
@@ -21,28 +22,23 @@ const Login = lazy(() => import("./pages/Login/Login"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const CategoryView = lazy(() => import("./pages/CategoryView/CategoryView"));
 
-const getInitialAuthState = () => {
-  const storedAuthState = localStorage.getItem("authState");
-  return storedAuthState ? JSON.parse(storedAuthState) : false;
-};
-
-const AppRoutes = React.memo(({ isUserLoggedIn }) => {
+const AppRoutes = React.memo(() => {
   const [searchParams] = useSearchParams();
   const category = searchParams.get("category");
+
+  const user = JSON.parse(localStorage.getItem("authState"));
+
+  console.log("routes isUserLoggedIn: ", user);
 
   return useRoutes([
     {
       path: "/profile",
-      element: isUserLoggedIn ? (
-        <Perfil />
-      ) : (
-        <Navigate to="/login" replace={true} />
-      ),
+      element: user ? <Perfil /> : <Navigate to="/login" replace={true} />,
     },
     {
       path: "/library",
       element:
-        isUserLoggedIn && category ? (
+        user && category ? (
           <CategoryView categorySelected={category} />
         ) : (
           <Navigate to="/login" replace={true} />
@@ -50,7 +46,7 @@ const AppRoutes = React.memo(({ isUserLoggedIn }) => {
     },
     {
       path: "/login",
-      element: isUserLoggedIn ? <Navigate to="/" replace={true} /> : <Login />,
+      element: user ? <Navigate to="/" replace={true} /> : <Login />,
     },
     {
       path: "/",
@@ -68,23 +64,45 @@ const AppRoutes = React.memo(({ isUserLoggedIn }) => {
 });
 
 const App = () => {
-  const [isUserLoggedInState, setIsUserLoggedInState] = React.useState(
-    getInitialAuthState()
-  );
+  const [token, setToken] = useState(null);
+  const getTokenNotification = async () => {
+    const registration = await navigator.serviceWorker.ready;
+
+    const response = await getToken(messaging, {
+      serviceWorkerRegistration: registration,
+      vapidKey: process.env.REACT_APP_PUSH_NOTIFICATION_KEY,
+    }).catch((err) => console.error("Error getting token: ", err));
+
+    if (response) {
+      setToken(response);
+    } else {
+      console.log("No token");
+    }
+  };
+  const notifyme = useCallback(() => {
+    if (!window.Notification) {
+      console.log("This browser does not support notifications.");
+      return;
+    }
+    if (Notification.permission === "granted") {
+      getTokenNotification();
+    } else if (
+      Notification.permission !== "denied" ||
+      Notification.permission === "default"
+    ) {
+      Notification.requestPermission().then((permission) => {
+        if (permission === "granted") {
+          console.log("permission granted");
+          getTokenNotification();
+        }
+      });
+    }
+  }, []);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      if (currentUser) {
-        localStorage.setItem("authState", JSON.stringify(true));
-        setIsUserLoggedInState(true);
-      } else {
-        localStorage.removeItem("authState");
-        setIsUserLoggedInState(false);
-      }
-    });
-
-    return unsubscribe;
-  }, []);
+    notifyme();
+    console.log("token: ", token);
+  }, [notifyme, token]);
 
   return (
     <BrowserRouter basename={"/"}>
@@ -94,8 +112,8 @@ const App = () => {
             <Suspense fallback={<div>Loading...</div>}>
               <ToastContainer />
 
-              <CustomNavbar isUserLoggedIn={isUserLoggedInState}>
-                <AppRoutes isUserLoggedIn={isUserLoggedInState} />
+              <CustomNavbar>
+                <AppRoutes />
               </CustomNavbar>
             </Suspense>
           </ImagesProvider>

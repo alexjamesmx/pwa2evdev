@@ -60,6 +60,7 @@ const InfiniteList = () => {
   }, [getImages]);
 
   const handleUnregisteredUsers = () => {
+    console.log("list user", user);
     if (!user) {
       toast.error("You must be logged in to perform this action.");
       return false;

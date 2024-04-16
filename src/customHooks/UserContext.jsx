@@ -1,65 +1,43 @@
-import React, { createContext, useState, useEffect, useCallback } from "react";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../firebase";
-import { getToken } from "firebase/messaging";
-import { messaging } from "../firebase";
+import React, { createContext, useState, useEffect } from "react";
+import axios from "axios";
 
 const UserContext = createContext(null);
 
 const UserProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(
+    JSON.parse(localStorage.getItem("authState")) || null
+  );
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(null);
-  const [token, setToken] = useState(null);
-  const notifyme = useCallback(() => {
-    if (!window.Notification) {
-      console.log("This browser does not support notifications.");
-      return;
+
+  useEffect(() => {
+    setIsUserLoggedIn(user ? true : false);
+    if (user) {
+      console.log("USERCONTEXt user: ", user);
+      localStorage.setItem("authState", JSON.stringify(user));
     }
-    if (Notification.permission === "granted") {
-      getTokenNotification();
-    } else if (
-      Notification.permission !== "denied" ||
-      Notification.permission === "default"
-    ) {
-      Notification.requestPermission().then((permission) => {
-        console.log("permission: ", permission);
-        if (permission === "granted") {
-          getTokenNotification();
-        }
-      });
+  }, [user]);
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("authState"));
+    if (user) {
+      axios
+        .get(process.env.REACT_APP_BACK_API + "/users/" + user._id)
+        .then((response) => {
+          if (response.status === 200) {
+            console.log("User from mongo", user);
+            setUser(user);
+          } else {
+            console.error("Error getting user: ", response);
+          }
+        })
+        .catch((error) => {
+          console.error("Error getting user: ", error);
+        });
+      setIsUserLoggedIn(true);
+    } else {
+      setIsUserLoggedIn(false);
     }
   }, []);
-  useEffect(() => {
-    notifyme();
-  }, [token, notifyme]);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      setIsUserLoggedIn(currentUser ? true : false);
-      if (currentUser) {
-        localStorage.setItem("authState", JSON.stringify(true));
-        notifyme();
-      } else {
-        localStorage.removeItem("authState");
-      }
-      console.log("token: ", token);
-    });
-
-    return unsubscribe;
-  }, [notifyme, token]);
-
-  const getTokenNotification = async () => {
-    const response = await getToken(messaging, {
-      vapidKey: process.env.REACT_APP_PUSH_NOTIFICATION_KEY,
-    }).catch((err) => console.error("Error getting token: ", err));
-
-    if (response) {
-      setToken(response);
-    } else {
-      console.log("No token");
-    }
-  };
 
   return (
     <UserContext.Provider

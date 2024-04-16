@@ -22,7 +22,8 @@ const Perfil = () => {
   const [openBottom, setOpenBottom] = useState(false);
   const openDrawerBottom = () => setOpenBottom(true);
   const closeDrawerBottom = () => setOpenBottom(false);
-  const [displayName, setDisplayName] = useState("");
+  console.log("perfil user", user);
+  const [displayName, setDisplayName] = useState(user.displayName);
 
   const [open, setOpen] = React.useState(false);
 
@@ -33,23 +34,6 @@ const Perfil = () => {
   const toggleCategory = (category) => {
     setShowCategory(category);
   };
-
-  useEffect(() => {
-    const loadUserData = async () => {
-      console.log("Perfil setting user data...");
-      if (user) {
-        const db = getFirestore();
-        const userDocRef = doc(db, "users", user.uid);
-        const userDocSnap = await getDoc(userDocRef);
-        if (userDocSnap.exists()) {
-          const userData = userDocSnap.data();
-          setDisplayName(userData.displayName);
-        }
-      }
-    };
-
-    loadUserData();
-  }, [user]);
 
   if (!user) {
     return <div>Loading...</div>;

@@ -29,6 +29,7 @@ import {
 import { UserContext } from "../../customHooks/UserContext";
 import { ImagesContext } from "../../customHooks/ImagesContext";
 import { useNavigate } from "react-router";
+import axios from "axios";
 
 const ImageDetails = memo(({ handleOpen, open, srcImage, image }) => {
   const { user } = useContext(UserContext);
@@ -77,31 +78,32 @@ const ImageDetails = memo(({ handleOpen, open, srcImage, image }) => {
   const toggleSave = useCallback(async () => {
     try {
       if (!user || !image || !srcImage) return;
-      const db = getFirestore();
-      const userId = user.uid;
-      const imagesRef = doc(collection(db, "images"), userId);
-      const updateImage = { url: srcImage, id: image.id };
 
-      const docSnapshot = await getDoc(imagesRef);
-      let savedData = [];
+      await axios
+        .post(
+          process.env.REACT_APP_BACK_API + "/users/" + user._id + "/toggleSave",
+          {
+            category: "saved",
+            id: image.id,
+            url: srcImage,
+          }
+        )
+        .then((response) => {
+          if (response.status === 200) {
+            console.log("response", response.data);
+            if (response.data.message === "removed") {
+              setIsFavorite(false);
+            } else {
+              setIsFavorite(true);
+            }
+          } else {
+            console.error("Error saving image: ", response);
+          }
+        })
+        .catch((error) => {
+          console.error("Error saving image: ", error);
+        });
 
-      if (docSnapshot.exists()) {
-        savedData = docSnapshot.data().saved || [];
-      } else {
-        await setDoc(imagesRef, { saved: [] });
-      }
-
-      const isImageSaved = savedData.some((item) => item.id === updateImage.id);
-
-      if (isImageSaved) {
-        await updateDoc(imagesRef, { saved: arrayRemove(updateImage) });
-        setIsFavorite(false);
-      } else {
-        await updateDoc(imagesRef, { saved: arrayUnion(updateImage) });
-        setIsFavorite(true);
-      }
-
-      // Update library after save toggle
       setRefresh((e) => !e);
     } catch (error) {
       console.error("Error toggling save:", error);

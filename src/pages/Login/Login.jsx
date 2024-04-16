@@ -1,13 +1,17 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { signInWithGooglePopup } from "../../firebase";
 import { collection, doc, getFirestore, setDoc } from "firebase/firestore";
 import googleIcon from "../../assets/logos/google40.svg";
 import { useNetworkCheck } from "../../customHooks/network-context";
+import axios from "axios";
+import { UserContext } from "../../customHooks/UserContext";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const navigate = useNavigate();
   const { isOnline } = useNetworkCheck();
+  const { setUser } = useContext(UserContext);
 
   const logGoogleUser = async () => {
     if (!isOnline) {
@@ -18,24 +22,30 @@ const Login = () => {
     try {
       const response = await signInWithGooglePopup();
       const user = response.user;
-      const firestoreUser = {
-        uid: user.uid,
-        email: user.email || "",
+
+      const userData = {
         displayName: user.displayName || "",
+        email: user.email || "",
         photoURL: user.photoURL || "",
-        // Add other relevant user data fields
+        _id: user.uid,
       };
-      const db = getFirestore();
-      const usersRef = collection(db, "users");
-      await setDoc(doc(usersRef, user.uid), firestoreUser);
-      navigate("/");
+      axios
+        .post(process.env.REACT_APP_BACK_API + "/users", userData)
+        .then(function (response) {
+          if (response.status === 201 || response.status === 200) {
+            setUser(userData);
+            navigate("/");
+          } else {
+            toast.error("Error when logging in");
+          }
+        })
+        .catch(function (error) {
+          console.error(error);
+        });
+
+      // navigate("/");
     } catch (error) {
       console.error("Error logging in:", error);
-      //if network error, show offline page
-      // if (error.code === "auth/network-request-failed") {
-      //   navigate("/offline");
-      // }
-      // Add user-friendly error handling here if needed
     }
   };
 

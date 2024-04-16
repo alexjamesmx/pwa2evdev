@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Navbar, Collapse, IconButton } from "@material-tailwind/react";
 import { Link, useLocation } from "react-router-dom";
 import { UserContext } from "../../customHooks/UserContext";
@@ -10,13 +10,13 @@ import { onMessage } from "firebase/messaging";
 import { messaging } from "../../firebase";
 
 function CustomNavbar({ children }) {
-  const { user, isUserLoggedIn, setIsUserLoggedIn } = useContext(UserContext);
+  const { user, setUser, isUserLoggedIn, setIsUserLoggedIn } =
+    useContext(UserContext);
   const location = useLocation();
   const navigate = useNavigate();
 
   onMessage(messaging, (payload) => {
     console.log("onMessage", payload);
-    //toast title and body
     toast.info(`${payload.notification.title}: ${payload.notification.body}`);
   });
 
@@ -25,6 +25,7 @@ function CustomNavbar({ children }) {
     auth.signOut();
     setIsUserLoggedIn(false);
     localStorage.removeItem("authState");
+    setUser(null);
     navigate("/login");
   };
 
@@ -33,7 +34,7 @@ function CustomNavbar({ children }) {
   };
   const [openNav, setOpenNav] = React.useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     window.addEventListener(
       "resize",
       () => window.innerWidth >= 960 && setOpenNav(false)
