@@ -41,16 +41,19 @@ function CustomNavbar({ children }) {
   }, []);
 
   const navList = (
-    <ul className="flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
+    <ul className="flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6 w-full py-">
       {isUserLoggedIn && (
         <>
-          <Link to="/profile" className="nav-link-custom">
+          <Link
+            to="/profile"
+            className="nav-link-custom self-center items-center"
+          >
             <img
               src={user?.photoURL || "../../assets/user-default-120.webp"}
               alt="foto de perfil"
               width="50"
               height="50"
-              className={`rounded-full cursor-pointer ${
+              className={`rounded-full cursor-pointer align-center ${
                 isActive("/profile") ? "ring-4 ring-deep-orange-900" : ""
               }`}
             />
@@ -58,42 +61,34 @@ function CustomNavbar({ children }) {
         </>
       )}
 
-      <li>
+      <Link
+        to="/"
+        className={`p-1 font-normal items-center cursor-pointer text-black text-center  ${
+          isActive("/") ? "bg-deep-orange-900 text-white rounded px-4" : ""
+        }`}
+      >
+        Home
+      </Link>
+      {!isUserLoggedIn ? (
         <Link
-          to="/"
-          className={`p-1 font-normal items-center cursor-pointer text-black ${
-            isActive("/") ? "bg-deep-orange-900 text-white rounded px-4" : ""
+          to="/login"
+          className={`p-1 font-normal items-center cursor-pointer text-black text-center w-full ${
+            isActive("/login")
+              ? "bg-deep-orange-900 text-white rounded px-4"
+              : ""
           }`}
         >
-          Home
+          Log In
         </Link>
-      </li>
-      {!isUserLoggedIn ? (
-        <li>
-          <Link
-            to="/login"
-            className={`p-1 font-normal items-center cursor-pointer text-black ${
-              isActive("/login")
-                ? "bg-deep-orange-900 text-white rounded px-4"
-                : ""
-            }`}
-          >
-            Log In
-          </Link>
-        </li>
       ) : (
-        <li>
-          <Link
-            onClick={logout}
-            className={`p-1 font-normal items-center cursor-pointer text-black ${
-              isActive("/login")
-                ? "bg-blue-gray-900 text-white rounded px-4"
-                : ""
-            }`}
-          >
-            Logout
-          </Link>
-        </li>
+        <Link
+          onClick={logout}
+          className={`p-1 font-normal items-center cursor-pointer text-black  text-center ${
+            isActive("/login") ? "bg-blue-gray-900 text-white rounded px-4" : ""
+          }`}
+        >
+          Logout
+        </Link>
       )}
     </ul>
   );
@@ -153,7 +148,7 @@ function CustomNavbar({ children }) {
 
         <Collapse
           open={openNav}
-          className="flex justify-center flex-col items-center"
+          className="flex justify-center flex-col items-center w-full"
         >
           {navList}
         </Collapse>

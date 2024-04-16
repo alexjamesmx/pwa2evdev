@@ -1,6 +1,6 @@
 import React from "react";
 import { PlusCircleFill } from "react-bootstrap-icons";
-
+import Empty from "../../assets/logos/empty.webp";
 const LibraryList = ({
   libraries,
   displayLibrary,
@@ -49,7 +49,13 @@ const LibraryList = ({
                 className="rounded object-cover w-full h-full"
               />
             ) : (
-              <>Empty category</>
+              <img
+                src={Empty}
+                width={200}
+                height={200}
+                alt={`${item.category}`}
+                className="rounded object-cover w-full h-full"
+              />
             )}
           </div>
         ))}

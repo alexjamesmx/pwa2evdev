@@ -1,6 +1,6 @@
 importScripts("https://cdn.jsdelivr.net/npm/pouchdb@8.0.1/dist/pouchdb.min.js");
-importScripts("/pwa2evdev/js/sw-utils.js");
-importScripts("/pwa2evdev/firebase-messaging-sw.js");
+importScripts("/js/sw-utils.js");
+importScripts("/firebase-messaging-sw.js");
 
 const CACHE_DYNAMIC = "dynamic-v0";
 const CACHE_STATIC = "static-v0";
@@ -12,30 +12,30 @@ self.addEventListener("install", (event) => {
   console.log("SW: static cache installed");
   const cachePromise = caches.open(CACHE_STATIC).then((cache) => {
     return cache.addAll([
-      "/pwa2evdev/",
-      "/pwa2evdev/img/29.png",
-      "/pwa2evdev/img/40.png",
-      "/pwa2evdev/img/57.png",
-      "/pwa2evdev/img/58.png",
-      "/pwa2evdev/img/60.png",
-      "/pwa2evdev/img/80.png",
-      "/pwa2evdev/img/87.png",
-      "/pwa2evdev/img/114.png",
-      "/pwa2evdev/img/120.png",
-      "/pwa2evdev/img/180.png",
-      "/pwa2evdev/img/1024.png",
-      "/pwa2evdev/img/maskable_icon_x192.png",
-      "/pwa2evdev/img/pinterest_mobile_360x740.png",
-      "/pwa2evdev/img/pinterest_desktop_1280x800.png",
-      "/pwa2evdev/js/app.js",
-      "/pwa2evdev/js/sw-utils.js",
-      "/pwa2evdev/favicon.ico",
-      "/pwa2evdev/firebase-messaging-sw.js",
-      "/pwa2evdev/manifest.json",
-      "/pwa2evdev/OfflineFallback.js",
-      "/pwa2evdev/sw.js",
-      "/pwa2evdev/img/not-found.png",
-      "/pwa2evdev/index.html",
+      "/",
+      "/img/29.png",
+      "/img/40.png",
+      "/img/57.png",
+      "/img/58.png",
+      "/img/60.png",
+      "/img/80.png",
+      "/img/87.png",
+      "/img/114.png",
+      "/img/120.png",
+      "/img/180.png",
+      "/img/1024.png",
+      "/img/maskable_icon_x192.png",
+      "/img/pinterest_mobile_360x740.png",
+      "/img/pinterest_desktop_1280x800.png",
+      "/js/app.js",
+      "/js/sw-utils.js",
+      "/favicon.ico",
+      "/firebase-messaging-sw.js",
+      "/manifest.json",
+      "/OfflineFallback.js",
+      "/sw.js",
+      "/img/not-found.png",
+      "/index.html",
       // "/pwa2evdev/static/js/bundle.js",
       // "/pwa2evdev/static/js/src_components_ListImages_InfiniteList_jsx.chunk.js",
       // "/pwa2evdev/static/js/src_pages_Home_Home_jsx.chunk.js",

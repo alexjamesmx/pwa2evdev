@@ -87,7 +87,7 @@ const App = () => {
   }, []);
 
   return (
-    <BrowserRouter basename={"/pwa2evdev/"}>
+    <BrowserRouter basename={"/"}>
       <NetworkProvider>
         <UserProvider>
           <ImagesProvider>
