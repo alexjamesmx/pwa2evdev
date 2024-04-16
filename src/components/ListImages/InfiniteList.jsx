@@ -14,6 +14,7 @@ import axios from "axios";
 import { Loading } from "../Loading";
 import { optimizeImageUrl } from "../../utils";
 import { useNetworkCheck } from "../../customHooks/network-context";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 const InfiniteList = () => {
   const { user } = useContext(UserContext);
   const [imageData, setImageData] = useState(null);
@@ -93,7 +94,7 @@ const InfiniteList = () => {
               handleOpen(image, optimizeImageUrl(image.urls?.thumb))
             }
           >
-            <img
+            <LazyLoadImage
               rel="preload"
               srcSet={optimizeImageUrl(image.urls?.thumb)}
               src={optimizeImageUrl(image.urls?.thumb)}
