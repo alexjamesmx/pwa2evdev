@@ -52,13 +52,6 @@ const UserProvider = ({ children }) => {
   const getTokenNotification = async () => {
     const registration = await navigator.serviceWorker.ready;
 
-    // const messaging = messaging();
-
-    // const token = await messaging.getToken({
-    //   serviceWorkerRegistration: registration,
-    //   vapidKey: "",
-    // });
-
     const response = await getToken(messaging, {
       serviceWorkerRegistration: registration,
       vapidKey: process.env.REACT_APP_PUSH_NOTIFICATION_KEY,
@@ -66,6 +59,7 @@ const UserProvider = ({ children }) => {
 
     if (response) {
       setToken(response);
+      console.log("Token: ", response);
     } else {
       console.log("No token");
     }

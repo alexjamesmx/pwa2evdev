@@ -4,6 +4,7 @@ import {
   BrowserRouter,
   Navigate,
   useSearchParams,
+  HashRouter,
 } from "react-router-dom";
 import CustomNavbar from "./components/navbar/CustomNavbar";
 import { UserProvider } from "./customHooks/UserContext";
@@ -14,7 +15,6 @@ import { NetworkProvider } from "./customHooks/network-context";
 import OfflineFallback from "./OfflineFallback";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
-
 const Home = lazy(() => import("./pages/Home/Home"));
 const Perfil = lazy(() => import("./pages/Perfil/Perfi"));
 const Login = lazy(() => import("./pages/Login/Login"));
@@ -87,7 +87,7 @@ const App = () => {
   }, []);
 
   return (
-    <BrowserRouter basename={"/pwa2evdev/"}>
+    <HashRouter basename={"/pwa2evdev/"}>
       <NetworkProvider>
         <UserProvider>
           <ImagesProvider>
@@ -101,7 +101,7 @@ const App = () => {
           </ImagesProvider>
         </UserProvider>
       </NetworkProvider>
-    </BrowserRouter>
+    </HashRouter>
   );
 };
 
