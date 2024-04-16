@@ -37,7 +37,6 @@ self.addEventListener("install", (event) => {
       "/pwa2evdev/sw.js",
       "/pwa2evdev/static/js/bundle.js",
       "/pwa2evdev/img/not-found.png",
-      "/pwa2evdev/app.js",
       // "/pwa2evdev/static/js/src_components_ListImages_InfiniteList_jsx.chunk.js",
       // "/pwa2evdev/static/js/src_pages_Home_Home_jsx.chunk.js",
       // "/pwa2evdev/static/js/vendors-node_modules_react-infinite-scroll-component_dist_index_es_js.chunk.js",
