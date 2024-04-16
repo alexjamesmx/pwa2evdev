@@ -1,11 +1,3 @@
-import { isSupported } from "firebase/messaging";
-import {
-  getMessaging,
-  onBackgroundMessage,
-  getToken,
-  isSupported,
-} from "firebase/messaging";
-
 importScripts(
   "https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"
 );
@@ -25,13 +17,7 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = firebase.initializeApp(firebaseConfig);
-const messaging = getMessaging(app, {
-  ServiceWorkerRegistration: {
-    scope: "/pwa2evdev/",
-  },
-});
-
-const serviceWorkerScope = "/pwa2evdev/"; // Set the correct scope for your service worker
+const messaging = firebase.messaging(app);
 
 messaging.onBackgroundMessage((payload) => {
   console.log("Received background message ", payload);
