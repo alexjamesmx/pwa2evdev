@@ -1,7 +1,6 @@
 import React, { lazy, Suspense, useEffect } from "react";
 import {
   useRoutes,
-  BrowserRouter,
   Navigate,
   useSearchParams,
   HashRouter,
@@ -93,7 +92,6 @@ const App = () => {
           <ImagesProvider>
             <Suspense fallback={<div>Loading...</div>}>
               <ToastContainer />
-
               <CustomNavbar isUserLoggedIn={isUserLoggedInState}>
                 <AppRoutes isUserLoggedIn={isUserLoggedInState} />
               </CustomNavbar>
