@@ -1,9 +1,9 @@
 import React, { lazy, Suspense, useEffect } from "react";
 import {
   useRoutes,
+  BrowserRouter,
   Navigate,
   useSearchParams,
-  HashRouter,
 } from "react-router-dom";
 import CustomNavbar from "./components/navbar/CustomNavbar";
 import { UserProvider } from "./customHooks/UserContext";
@@ -86,12 +86,13 @@ const App = () => {
   }, []);
 
   return (
-    <HashRouter basename={"/pwa2evdev/"}>
+    <BrowserRouter basename={"/pwa2evdev/"}>
       <NetworkProvider>
         <UserProvider>
           <ImagesProvider>
             <Suspense fallback={<div>Loading...</div>}>
               <ToastContainer />
+
               <CustomNavbar isUserLoggedIn={isUserLoggedInState}>
                 <AppRoutes isUserLoggedIn={isUserLoggedInState} />
               </CustomNavbar>
@@ -99,7 +100,7 @@ const App = () => {
           </ImagesProvider>
         </UserProvider>
       </NetworkProvider>
-    </HashRouter>
+    </BrowserRouter>
   );
 };
 
