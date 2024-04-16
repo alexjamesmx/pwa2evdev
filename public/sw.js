@@ -25,7 +25,7 @@ self.addEventListener("install", (event) => {
       "/pwa2evdev/img/180.png",
       "/pwa2evdev/img/1024.png",
       "/pwa2evdev/img/maskable_icon_x192.png",
-      "/pwa2evdev/img/pinterest_mobile360x740.png",
+      "/pwa2evdev/img/pinterest_mobile_360x740.png",
       "/pwa2evdev/img/pinterest_desktop_1280x800.png",
       "/pwa2evdev/js/app.js",
       "/pwa2evdev/js/sw-utils.js",
