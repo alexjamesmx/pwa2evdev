@@ -1,6 +1,6 @@
 importScripts("https://cdn.jsdelivr.net/npm/pouchdb@8.0.1/dist/pouchdb.min.js");
 importScripts("/pwa2evdev/js/sw-utils.js");
-importScripts("/firebase-messaging-sw.js");
+importScripts("/pwa2evdev/firebase-messaging-sw.js");
 
 const CACHE_DYNAMIC = "dynamic-v0";
 const CACHE_STATIC = "static-v0";
