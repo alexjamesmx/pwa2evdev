@@ -1,5 +1,5 @@
 const db = PouchDB("ev2-db");
-const server = "https://pwa-express-back.onrender.com/api/users";
+const server = "https://pwa-express-back.onrender.com/api/users/";
 
 function manageAPIPOSTS(CACHE_DYNAMIC, CACHE_DYNAMIC_LIMIT, req) {
   const method = req.clone().method;
