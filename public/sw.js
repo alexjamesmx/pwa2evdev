@@ -47,19 +47,24 @@ self.addEventListener("install", (event) => {
 self.addEventListener("activate", (event) => {
   console.log("SW: activated");
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (
-            cacheName !== CACHE_STATIC &&
-            cacheName !== CACHE_DYNAMIC &&
-            cacheName !== CACHE_INMUTABLE
-          ) {
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    })
+    caches
+      .keys()
+      .then((cacheNames) => {
+        return Promise.all(
+          cacheNames.map((cacheName) => {
+            if (
+              cacheName !== CACHE_STATIC &&
+              cacheName !== CACHE_DYNAMIC &&
+              cacheName !== CACHE_INMUTABLE
+            ) {
+              return caches.delete(cacheName);
+            }
+          })
+        );
+      })
+      .then(() => {
+        return self.clients.claim();
+      })
   );
 });
 
