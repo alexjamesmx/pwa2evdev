@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { signInWithGooglePopup } from "../../firebase";
-import { collection, doc, getFirestore, setDoc } from "firebase/firestore";
 import googleIcon from "../../assets/logos/google40.svg";
 import { useNetworkCheck } from "../../customHooks/network-context";
 import axios from "axios";
@@ -11,7 +10,8 @@ import { toast } from "react-toastify";
 const Login = () => {
   const navigate = useNavigate();
   const { isOnline } = useNetworkCheck();
-  const { setUser } = useContext(UserContext);
+  const { setUserLocalStorage, setUserRefresh, userRefresh } =
+    useContext(UserContext);
 
   const logGoogleUser = async () => {
     if (!isOnline) {
@@ -33,7 +33,8 @@ const Login = () => {
         .post(process.env.REACT_APP_BACK_API + "/users", userData)
         .then(function (response) {
           if (response.status === 201 || response.status === 200) {
-            setUser(userData);
+            setUserRefresh(!userRefresh);
+            setUserLocalStorage(userData);
             navigate("/");
           } else {
             toast.error("Error when logging in");

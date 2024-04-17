@@ -33,19 +33,20 @@ const LibraryList = ({
   return (
     <div className="flex flex-col items-center">
       <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-        {libraries.map((item) => (
+        {Object.entries(libraries).map(([key, values]) => (
           <div
             className="rounded relative h-44 cursor-pointer"
-            key={item.category}
-            onClick={displayLibrary(item.category)}
+            key={values.category}
+            onClick={displayLibrary(values.category)}
           >
-            <h3 className="font-bold">{item.category}</h3>
-            {item.images[0]?.url ? (
+            <h3 className="font-bold">{values.category}</h3>
+
+            {values?.images[0]?.url ? (
               <img
-                src={item.images[0]?.url}
+                src={values?.images[0]?.url}
                 width={200}
                 height={200}
-                alt={`${item.category}`}
+                alt={`${values.category}`}
                 className="rounded object-cover w-full h-full"
               />
             ) : (
@@ -53,7 +54,7 @@ const LibraryList = ({
                 src={Empty}
                 width={200}
                 height={200}
-                alt={`${item.category}`}
+                alt={`${values?.category}`}
                 className="rounded object-cover w-full h-full"
               />
             )}

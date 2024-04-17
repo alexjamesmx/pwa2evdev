@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { updateUserDisplayNameInDatabase } from "../../firebase";
 import {
   Button,
   Dialog,
@@ -9,25 +8,38 @@ import {
   Input,
 } from "@material-tailwind/react";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 const EditarPerfil = ({ open, setOpen, user, setUser }) => {
   const [newDisplayName, setNewDisplayName] = useState("");
 
   const handleSubmit = async () => {
-    try {
-      if (newDisplayName === "") {
-        toast.error("Username cannot be empty");
-        setOpen((cur) => !cur);
-        return;
-      }
-      await updateUserDisplayNameInDatabase(user.uid, newDisplayName);
-
-      setUser({ ...user, displayName: newDisplayName });
-      toast.success("Username updated successfully");
-    } catch (error) {
-      toast.error("Error updating display name. Try later");
-      console.error("Error updating display name in database:", error);
+    if (newDisplayName === "") {
+      toast.error("Username cannot be empty");
+      setOpen((cur) => !cur);
+      return;
     }
+
+    const url = `${process.env.REACT_APP_BACK_API}/users/${user._id}`;
+    axios
+      .put(url, {
+        displayName: newDisplayName,
+        id: user._id,
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          setUser({ ...user, displayName: newDisplayName });
+          toast.success("Username updated successfully");
+        } else {
+          console.error("Error updating display name in database:", res);
+          toast.error("Error updating display name. Try later");
+        }
+      })
+      .catch((error) => {
+        toast.error("Error updating display name. Try later");
+        console.error("Error updating display name in database:", error);
+      });
+
     setOpen((cur) => !cur);
   };
   const handleChange = (e) => {

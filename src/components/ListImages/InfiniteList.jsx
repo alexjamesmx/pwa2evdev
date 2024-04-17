@@ -31,7 +31,7 @@ const InfiniteList = () => {
   const fetchImages = useCallback(
     async (page = 1) => {
       try {
-        const total = 20;
+        const total = 30;
         const response = await axios.get(
           `https://api.unsplash.com/photos?page=${page}&per_page=${total}&client_id=${key}`
         );
@@ -60,7 +60,6 @@ const InfiniteList = () => {
   }, [getImages]);
 
   const handleUnregisteredUsers = () => {
-    console.log("list user", user);
     if (!user) {
       toast.error("You must be logged in to perform this action.");
       return false;
@@ -87,12 +86,12 @@ const InfiniteList = () => {
 
   const renderImages = () => {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 justify-items-center my-16">
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-11">
         {nextImages.map((image, index) => (
           <Card
             key={index}
             className="cursor-pointer transition-opacity hover:opacity-90"
-            style={{ height: 300, width: 200 }}
+            style={{ height: 400, width: 200 }}
             onClick={() =>
               handleOpen(image, optimizeImageUrl(image.urls?.thumb))
             }
@@ -104,7 +103,7 @@ const InfiniteList = () => {
               src={optimizeImageUrl(image.urls?.thumb)}
               alt={image.alt_description || "Image from Unsplash"}
               className="object-fill transform hover:scale-105 transition-transform duration-300 rounded-md"
-              height={300}
+              height={400}
               width={200}
             />
           </Card>
@@ -132,6 +131,7 @@ const InfiniteList = () => {
         }}
         hasMore={isOnline}
         loader={<Loading />}
+        scrollThreshold={0.8}
         endMessage={
           <p className="py-10 text-xl justify-center text-center">
             <b>

@@ -10,6 +10,7 @@ import axios from "axios";
 import { ArrowLeftSquareFill } from "react-bootstrap-icons";
 import { ImagesContext } from "../../customHooks/ImagesContext";
 import { useNavigate } from "react-router";
+import PropTypes from "prop-types";
 
 const CategoryView = memo(({ categorySelected }) => {
   const { library } = useContext(ImagesContext);
@@ -22,8 +23,8 @@ const CategoryView = memo(({ categorySelected }) => {
 
   const getCategoryData = useCallback(
     (category) => {
-      const categoryData = library.find((item) => item.category === category);
-      if (!categoryData || categoryData.images.length === 0) {
+      const categoryData = library[category];
+      if (!categoryData || categoryData.length === 0) {
         return null;
       }
       return categoryData;
@@ -39,7 +40,7 @@ const CategoryView = memo(({ categorySelected }) => {
     }
 
     const response = await Promise.all(
-      data.images.map(async (image) => {
+      data.map(async (image) => {
         const res = await axios.get(
           `https://api.unsplash.com/photos/${image.id}?client_id=${process.env.REACT_APP_ACCESS_KEY}`
         );
@@ -77,4 +78,8 @@ const CategoryView = memo(({ categorySelected }) => {
   );
 });
 
+CategoryView.displayName = "CategoryView";
+CategoryView.propTypes = {
+  categorySelected: PropTypes.string.isRequired,
+};
 export default CategoryView;

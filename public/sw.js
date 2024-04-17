@@ -1,6 +1,7 @@
-importScripts("https://cdn.jsdelivr.net/npm/pouchdb@8.0.1/dist/pouchdb.min.js");
-importScripts("/js/sw-utils.js");
 importScripts("/firebase-messaging-sw.js");
+importScripts("/js/sw-utils.js");
+importScripts("https://cdn.jsdelivr.net/npm/pouchdb@8.0.1/dist/pouchdb.min.js");
+importScripts("/js/sw-db.js");
 
 const CACHE_DYNAMIC = "dynamic-v0";
 const CACHE_STATIC = "static-v0";
@@ -9,7 +10,7 @@ const CACHE_INMUTABLE = "inmutable-v0";
 const CACHE_DYNAMIC_LIMIT = 151;
 
 self.addEventListener("install", (event) => {
-  console.log("SW: static cache installed");
+  console.log("SW: installed");
   const cachePromise = caches.open(CACHE_STATIC).then((cache) => {
     return cache.addAll([
       "/",
@@ -36,17 +37,6 @@ self.addEventListener("install", (event) => {
       "/sw.js",
       "/img/not-found.png",
       "/index.html",
-      // "/pwa2evdev/static/js/bundle.js",
-      // "/pwa2evdev/static/js/src_components_ListImages_InfiniteList_jsx.chunk.js",
-      // "/pwa2evdev/static/js/src_pages_Home_Home_jsx.chunk.js",
-      // "/pwa2evdev/static/js/vendors-node_modules_react-infinite-scroll-component_dist_index_es_js.chunk.js",
-      // "/pwa2evdev/static/js/src_components_imageDetails_ImageDetails_jsx-src_utils_js.chunk.js",
-      // "/pwa2evdev/static/js/src_pages_Login_Login_jsx.chunk.js",
-      // "/pwa2evdev/static/js/src_pages_Perfil_Perfi_jsx.chunk.js",
-      // "/pwa2evdev/static/js/src_pages_Perfil_EditarPerfi_jsx.chunk.js",
-      // "/pwa2evdev/static/js/src_pages_CategoryView_CategoryView_jsx.chunk.js",
-      // "/pwa2evdev/static/media/google40.1d1b6b0523bfed6fe90561969e50c650.svg",
-      // "/pwa2evdev/static/media/logo40.43a81a044e58ea50f3f12bbdb866dd7d.svg",
     ]);
   });
   const cacheInmutable = caches.open(CACHE_INMUTABLE).then((cache) => {
@@ -74,76 +64,74 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
-  if (!event.request.url.includes("http")) {
-    return;
-  }
+  if (!event.request.url.includes("http")) return;
 
   let fetchResponse;
 
-  if (
-    event.request.url.includes("database") &&
-    event.request.url.includes("Write")
-  ) {
+  if (event.request.url.includes("/api/users")) {
     fetchResponse = manageAPIPOSTS(
       CACHE_DYNAMIC,
       CACHE_DYNAMIC_LIMIT,
       event.request
     );
-  }
+  } else {
+    if (event.request.method === "GET") {
+      fetchResponse = caches.match(event.request).then((res) => {
+        //return cache if exists
+        if (res) return res;
 
-  if (event.request.method === "GET") {
-    fetchResponse = caches.match(event.request).then((res) => {
-      if (res) {
-        return res;
-      } //return from cache
-      // fetch from the internet
-
-      return fetch(event.request)
-        .then((newRes) => {
-          if (newRes.ok) {
-            updateDynamicCache(
-              CACHE_DYNAMIC,
-              CACHE_DYNAMIC_LIMIT,
-              event.request,
-              newRes.clone()
-            );
-            return newRes.clone();
-          }
-          return newRes;
-        })
-        .catch(() => {
-          if (event.request.url.includes(".jsx")) {
+        //if not exists, fetch from network
+        return fetch(event.request)
+          .then((newRes) => {
+            if (newRes.ok) {
+              //save in cache
+              updateDynamicCache(
+                CACHE_DYNAMIC,
+                CACHE_DYNAMIC_LIMIT,
+                event.request,
+                newRes.clone()
+              );
+              return newRes.clone();
+            }
+            //if not possible to save in cache, return response
+            return newRes;
+          })
+          .catch(() => {
+            //if not possible to fetch from network, return offline page
+            if (event.request.url.includes(".jsx")) {
+              return caches.open(CACHE_STATIC).then((cache) => {
+                return cache.match("/OfflineFallback.js");
+              });
+            }
+            //if not possible to fetch from network, return offline image
+            if (
+              event.request.url.includes(".jpeg") ||
+              event.request.url.includes(".jpg") ||
+              event.request.url.includes(".png") ||
+              event.request.url.includes(".gif") ||
+              event.request.url.includes(".webp") ||
+              event.request.url.includes(".svg")
+            ) {
+              return caches.open(CACHE_STATIC).then((cache) => {
+                return cache.match("/img/not-found.png");
+              });
+            }
             return caches.open(CACHE_STATIC).then((cache) => {
               return cache.match("/OfflineFallback.js");
             });
-          }
-          if (
-            event.request.url.includes(".jpeg") ||
-            event.request.url.includes(".jpg") ||
-            event.request.url.includes(".png") ||
-            event.request.url.includes(".gif") ||
-            event.request.url.includes(".webp") ||
-            event.request.url.includes(".svg")
-          ) {
-            return caches.open(CACHE_STATIC).then((cache) => {
-              return cache.match("/img/not-found.png");
-            });
-          }
-          return caches.open(CACHE_STATIC).then((cache) => {
-            return cache.match("/OfflineFallback.js");
           });
-        });
-    });
-  } else if (event.request.method === "POST") {
-    fetchResponse = fetch(event.request);
+      });
+    } else if (event.request.method === "POST") {
+      fetchResponse = fetch(event.request);
+    }
   }
 
   event.respondWith(fetchResponse);
 });
 
 self.addEventListener("sync", (event) => {
-  console.log("Connection restored! Syncing data...");
   if (event.tag === "sync-post-edit-username") {
+    console.log("SW: Sync post-edit-username");
     event.waitUntil(postUpdateUsername());
   }
 });

@@ -1,10 +1,11 @@
-import {
+import React, {
   useContext,
   createContext,
   useEffect,
   useState,
   useCallback,
 } from "react";
+import PropTypes from "prop-types";
 
 const NetworkContext = createContext(null);
 
@@ -35,9 +36,12 @@ export const NetworkProvider = ({ children }) => {
   );
 };
 
+NetworkProvider.propTypes = {
+  children: PropTypes.node.isRequired,
+};
 export const useNetworkCheck = () => {
   const context = useContext(NetworkContext);
-  if (!!!context) {
+  if (!context) {
     throw Error("useNetworkCheck must be inside of NetworkProvider");
   }
   return context;

@@ -2,10 +2,10 @@ import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 
 const useFetchRandomImages = () => {
-  const [images, setImages] = useState([]);
+  const [randomImages, setImages] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchImages = useCallback(async (page = 1) => {
+  const fetchRandomImages = useCallback(async (page = 1) => {
     try {
       const total = 40;
       const response = await axios.get(
@@ -20,12 +20,12 @@ const useFetchRandomImages = () => {
   }, []);
 
   useEffect(() => {
-    if (images.length === 0) {
-      fetchImages();
+    if (randomImages.length === 0) {
+      fetchRandomImages();
     }
-  }, [fetchImages, images]);
+  }, [fetchRandomImages, randomImages]);
 
-  return { images, loading };
+  return { randomImages, loading };
 };
 
 export default useFetchRandomImages;

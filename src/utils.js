@@ -11,10 +11,10 @@ export const optimizeImageUrl = (url) => {
     optimizedUrl = optimizedUrl.replace(/(\\?|&)q=[^&]*/, "$1q=80");
   }
   if (optimizedUrl.includes("&h")) {
-    optimizedUrl = optimizedUrl.replace(/(\\?|&)q=[^&]*/, "&1h=300");
+    optimizedUrl = optimizedUrl.replace(/(\\?|&)q=[^&]*/, "&1h=400");
   } else {
     //add h=80 to the url
-    optimizedUrl = optimizedUrl + "&h=300";
+    optimizedUrl = optimizedUrl + "&h=400";
   }
 
   // Function to replace the 'fm' parameter with 'fm=webp'

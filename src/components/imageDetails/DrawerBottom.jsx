@@ -1,18 +1,9 @@
 import React, { useContext, useState } from "react";
-
 import { Drawer, IconButton, Button, Input } from "@material-tailwind/react";
-
-import {
-  getFirestore,
-  doc,
-  collection,
-  getDoc,
-  updateDoc,
-  setDoc,
-} from "firebase/firestore";
 import { toast } from "react-toastify";
 import { UserContext } from "../../customHooks/UserContext";
 import { ImagesContext } from "../../customHooks/ImagesContext";
+import axios from "axios";
 
 export const DrawerBottom = ({ openBottom, closeDrawerBottom }) => {
   const { user } = useContext(UserContext);
@@ -24,29 +15,29 @@ export const DrawerBottom = ({ openBottom, closeDrawerBottom }) => {
       toast.error("Library name is required");
 
     try {
-      const db = getFirestore();
-      const userId = user.uid;
-      const imagesRef = doc(collection(db, "images"), userId);
-      const docSnapshot = await getDoc(imagesRef);
+      //create dinamic object with the new library name
+      const data = {};
+      data[newLibrary] = [];
 
-      if (docSnapshot.exists()) {
-        if (docSnapshot.data()[newLibrary]) {
-          toast.error(
-            capitalizeFirstLetter(newLibrary) + " library already exists"
-          );
-        } else {
-          await updateDoc(imagesRef, {
-            [newLibrary]: [],
-          });
-          toast.success("Library created successfully");
-          setRefreshLibrary((prev) => !prev);
-        }
-      } else {
-        await setDoc(imagesRef, { [newLibrary]: [] });
-        toast.success("Library created successfully");
-        setRefreshLibrary((prev) => !prev);
-      }
-      closeDrawerBottom();
+      const url = `${process.env.REACT_APP_BACK_API}/users/${user._id}/categories`;
+      axios
+        .post(url, {
+          category: data,
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            if (res.data.message.includes("updated")) {
+              toast.info("Library already exists");
+            } else {
+              toast.success("Library created successfully");
+              setRefreshLibrary((prev) => !prev);
+              closeDrawerBottom();
+            }
+          }
+        })
+        .catch((error) => {
+          console.error("Error creating library:", error);
+        });
     } catch (error) {
       console.error("Error creating library:", error);
     }

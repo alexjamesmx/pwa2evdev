@@ -28,8 +28,6 @@ const AppRoutes = React.memo(() => {
 
   const user = JSON.parse(localStorage.getItem("authState"));
 
-  console.log("routes isUserLoggedIn: ", user);
-
   return useRoutes([
     {
       path: "/profile",
@@ -63,6 +61,7 @@ const AppRoutes = React.memo(() => {
   ]);
 });
 
+AppRoutes.displayName = "AppRoutes";
 const App = () => {
   const [token, setToken] = useState(null);
   const getTokenNotification = async () => {

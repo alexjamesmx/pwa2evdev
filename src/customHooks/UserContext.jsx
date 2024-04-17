@@ -1,51 +1,66 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useCallback } from "react";
 import axios from "axios";
-
+import PropTypes from "prop-types";
 const UserContext = createContext(null);
 
 const UserProvider = ({ children }) => {
-  const [user, setUser] = useState(
+  const [user, setUser] = useState(null);
+  const [userLocalStorage, setUserLocalStorage] = useState(
     JSON.parse(localStorage.getItem("authState")) || null
   );
-  const [isUserLoggedIn, setIsUserLoggedIn] = useState(null);
+  const [userRefresh, setUserRefresh] = useState(false);
+  const [userCategories, setUserCategories] = useState([]);
 
-  useEffect(() => {
-    setIsUserLoggedIn(user ? true : false);
-    if (user) {
-      console.log("USERCONTEXt user: ", user);
-      localStorage.setItem("authState", JSON.stringify(user));
+  const getUserFromMongo = useCallback(() => {
+    if (!userLocalStorage) {
+      return null;
     }
-  }, [user]);
+    axios
+      .get(process.env.REACT_APP_BACK_API + "/users/" + userLocalStorage._id)
+      .then((res) => {
+        if (res.status === 200) {
+          setUser(res.data);
+          setUserCategories(res.data.categories);
+          localStorage.setItem("authState", JSON.stringify(res.data));
+        } else {
+          return null;
+        }
+      })
+      .catch((error) => {
+        console.error("Error getting user: ", error);
+      });
+  }, [userLocalStorage]);
 
+  //HANDLE LOGIN or SIGNUP
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("authState"));
-    if (user) {
-      axios
-        .get(process.env.REACT_APP_BACK_API + "/users/" + user._id)
-        .then((response) => {
-          if (response.status === 200) {
-            console.log("User from mongo", user);
-            setUser(user);
-          } else {
-            console.error("Error getting user: ", response);
-          }
-        })
-        .catch((error) => {
-          console.error("Error getting user: ", error);
-        });
-      setIsUserLoggedIn(true);
-    } else {
-      setIsUserLoggedIn(false);
-    }
-  }, []);
+    getUserFromMongo();
+  }, [userRefresh, getUserFromMongo]);
+
+  const logout = () => {
+    localStorage.removeItem("authState");
+    setUser(null);
+  };
 
   return (
     <UserContext.Provider
-      value={{ user, setUser, isUserLoggedIn, setIsUserLoggedIn }}
+      value={{
+        user,
+        setUser,
+        userLocalStorage,
+        setUserLocalStorage,
+        userRefresh,
+        setUserRefresh,
+        logout,
+        userCategories,
+        setUserCategories,
+      }}
     >
       {children}
     </UserContext.Provider>
   );
 };
 
+UserProvider.propTypes = {
+  children: PropTypes.node.isRequired,
+};
 export { UserContext, UserProvider };

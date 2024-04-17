@@ -1,14 +1,7 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  lazy,
-  useEffect,
-} from "react";
+import React, { createContext, useContext, useState, lazy } from "react";
 import { UserContext } from "../../customHooks/UserContext";
 import UserLibrary from "../../components/UserLibrary/UserLibrary";
 import { DrawerBottom } from "../../components/imageDetails/DrawerBottom";
-import { doc, getDoc, getFirestore } from "@firebase/firestore";
 import EditarPerfil from "./EditarPerfil";
 
 const DefaultPhoto = lazy(() => import("../../assets/user-default-120.webp"));
@@ -22,8 +15,6 @@ const Perfil = () => {
   const [openBottom, setOpenBottom] = useState(false);
   const openDrawerBottom = () => setOpenBottom(true);
   const closeDrawerBottom = () => setOpenBottom(false);
-  console.log("perfil user", user);
-  const [displayName, setDisplayName] = useState(user.displayName);
 
   const [open, setOpen] = React.useState(false);
 
@@ -54,7 +45,7 @@ const Perfil = () => {
               <div className="mt-2">
                 <h3>
                   <span className="font-thin italic">username</span>:{" "}
-                  {displayName}
+                  {user?.displayName}
                 </h3>
 
                 <button

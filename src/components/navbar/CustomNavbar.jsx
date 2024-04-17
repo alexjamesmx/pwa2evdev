@@ -2,30 +2,17 @@ import React, { useContext, useEffect } from "react";
 import { Navbar, Collapse, IconButton } from "@material-tailwind/react";
 import { Link, useLocation } from "react-router-dom";
 import { UserContext } from "../../customHooks/UserContext";
-import { auth } from "../../firebase";
 import Logo from "../../assets/logos/logo40.svg";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import { onMessage } from "firebase/messaging";
-import { messaging } from "../../firebase";
+import PropTypes from "prop-types";
 
 function CustomNavbar({ children }) {
-  const { user, setUser, isUserLoggedIn, setIsUserLoggedIn } =
-    useContext(UserContext);
+  const { user, logout } = useContext(UserContext);
   const location = useLocation();
   const navigate = useNavigate();
 
-  onMessage(messaging, (payload) => {
-    console.log("onMessage", payload);
-    toast.info(`${payload.notification.title}: ${payload.notification.body}`);
-  });
-
-  const logout = () => {
-    console.log("Logging out...");
-    auth.signOut();
-    setIsUserLoggedIn(false);
-    localStorage.removeItem("authState");
-    setUser(null);
+  const handleLogout = () => {
+    logout();
     navigate("/login");
   };
 
@@ -43,7 +30,7 @@ function CustomNavbar({ children }) {
 
   const navList = (
     <ul className="flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6 w-full py-">
-      {isUserLoggedIn && (
+      {user && (
         <>
           <Link
             to="/profile"
@@ -70,7 +57,7 @@ function CustomNavbar({ children }) {
       >
         Home
       </Link>
-      {!isUserLoggedIn ? (
+      {!user ? (
         <Link
           to="/login"
           className={`p-1 font-normal items-center cursor-pointer text-black text-center w-full ${
@@ -83,7 +70,7 @@ function CustomNavbar({ children }) {
         </Link>
       ) : (
         <Link
-          onClick={logout}
+          onClick={handleLogout}
           className={`p-1 font-normal items-center cursor-pointer text-black  text-center ${
             isActive("/login") ? "bg-blue-gray-900 text-white rounded px-4" : ""
           }`}
@@ -154,9 +141,13 @@ function CustomNavbar({ children }) {
           {navList}
         </Collapse>
       </Navbar>
-      <div className="container mx-auto">{children}</div>
+      <div className="px-8">{children}</div>
     </div>
   );
 }
+
+CustomNavbar.propTypes = {
+  children: PropTypes.node,
+};
 
 export default CustomNavbar;

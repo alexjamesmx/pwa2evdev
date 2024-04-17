@@ -2,14 +2,18 @@ import React, { useState, useContext } from "react";
 import ImageDetails from "../imageDetails/ImageDetails";
 import { toast } from "react-toastify";
 import { UserContext } from "../../customHooks/UserContext";
-import { Card } from "@material-tailwind/react";
+import { Button, Card } from "@material-tailwind/react";
 import { optimizeImageUrl } from "../../utils";
+import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 
 const ListCategoryImages = ({ images }) => {
   const { user } = useContext(UserContext);
   const [srcImage, setSrcImage] = useState(null);
   const [open, setOpen] = React.useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const navigate = useNavigate();
 
   const handleUnregisteredUsers = () => {
     if (!user) {
@@ -26,6 +30,10 @@ const ListCategoryImages = ({ images }) => {
     setOpen((cur) => !cur);
   };
 
+  const goToHome = () => {
+    navigate("/");
+  };
+
   const renderImages = () =>
     images.length > 0 ? (
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 ">
@@ -38,7 +46,7 @@ const ListCategoryImages = ({ images }) => {
               handleOpen(image, optimizeImageUrl(image.urls.thumb))
             }
           >
-            <img
+            <LazyLoadImage
               rel="preload"
               srcSet={optimizeImageUrl(image.urls.thumb)}
               src={optimizeImageUrl(image.urls.thumb)}
@@ -52,7 +60,10 @@ const ListCategoryImages = ({ images }) => {
       </div>
     ) : (
       <div className="grid place-items-center  h-[calc(100%-48px)]">
-        <p>This libray is empty. Try adding new images! 🔥</p>
+        <p>This libray is empty. Try adding new images!</p>
+        <Button variant="gradient" onClick={goToHome} className="my-20">
+          Look for awesome images🔥
+        </Button>
       </div>
     );
 
@@ -67,6 +78,10 @@ const ListCategoryImages = ({ images }) => {
       {renderImages()}
     </>
   );
+};
+
+ListCategoryImages.propTypes = {
+  images: PropTypes.array.isRequired,
 };
 
 export default ListCategoryImages;
