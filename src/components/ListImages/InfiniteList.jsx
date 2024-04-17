@@ -86,7 +86,7 @@ const InfiniteList = () => {
 
   const renderImages = () => {
     return (
-      <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-11">
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-11 place-items-center">
         {nextImages.map((image, index) => (
           <Card
             key={index}
