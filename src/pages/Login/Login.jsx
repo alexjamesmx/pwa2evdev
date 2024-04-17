@@ -41,7 +41,7 @@ const Login = () => {
           }
         })
         .catch(function (error) {
-          console.error(error);
+          console.error("login eror: ", error);
         });
 
       // navigate("/");

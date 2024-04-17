@@ -122,7 +122,9 @@ self.addEventListener("fetch", (event) => {
           });
       });
     } else if (event.request.method === "POST") {
-      fetchResponse = fetch(event.request);
+      fetchResponse = fetch(event.request).catch((err) => {
+        console.log("SW API POST request failed: ", err);
+      });
     }
   }
 
