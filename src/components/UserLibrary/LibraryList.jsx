@@ -1,6 +1,7 @@
 import React from "react";
 import { PlusCircleFill } from "react-bootstrap-icons";
 import Empty from "../../assets/logos/empty.webp";
+import PropTypes from "prop-types";
 const LibraryList = ({
   libraries,
   displayLibrary,
@@ -33,7 +34,7 @@ const LibraryList = ({
   return (
     <div className="flex flex-col items-center">
       <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-        {Object.entries(libraries).map(([key, values]) => (
+        {Object.entries(libraries).map(([, values]) => (
           <div
             className="rounded relative h-44 cursor-pointer"
             key={values.category}
@@ -72,6 +73,14 @@ const LibraryList = ({
       )}
     </div>
   );
+};
+
+LibraryList.propTypes = {
+  libraries: PropTypes.array.isRequired,
+  displayLibrary: PropTypes.func.isRequired,
+  emptyMessage: PropTypes.string.isRequired,
+  showCreateButton: PropTypes.bool,
+  onCreateLibrary: PropTypes.func,
 };
 
 export default LibraryList;

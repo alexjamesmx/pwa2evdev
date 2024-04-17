@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { UserContext } from "../../customHooks/UserContext";
 import { ImagesContext } from "../../customHooks/ImagesContext";
 import axios from "axios";
-
+import PropTypes from "prop-types";
 export const DrawerBottom = ({ openBottom, closeDrawerBottom }) => {
   const { user } = useContext(UserContext);
   const { setRefresh: setRefreshLibrary } = useContext(ImagesContext);
@@ -42,10 +42,6 @@ export const DrawerBottom = ({ openBottom, closeDrawerBottom }) => {
       console.error("Error creating library:", error);
     }
   };
-
-  function capitalizeFirstLetter(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  }
 
   return (
     <Drawer
@@ -90,4 +86,9 @@ export const DrawerBottom = ({ openBottom, closeDrawerBottom }) => {
       </div>
     </Drawer>
   );
+};
+
+DrawerBottom.propTypes = {
+  openBottom: PropTypes.bool,
+  closeDrawerBottom: PropTypes.func,
 };

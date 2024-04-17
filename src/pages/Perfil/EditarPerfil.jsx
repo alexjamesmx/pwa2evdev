@@ -9,6 +9,7 @@ import {
 } from "@material-tailwind/react";
 import { toast } from "react-toastify";
 import axios from "axios";
+import PropTypes from "prop-types";
 
 const EditarPerfil = ({ open, setOpen, user, setUser }) => {
   const [newDisplayName, setNewDisplayName] = useState("");
@@ -55,10 +56,8 @@ const EditarPerfil = ({ open, setOpen, user, setUser }) => {
     >
       <Card className="mx-auto w-full max-w-[24rem]">
         <CardBody className="flex flex-col gap-4">
-          <p variant="h4" color="blue-gray">
-            Update profile
-          </p>
-          <p className="mb-3 font-normal" variant="paragraph" color="gray">
+          <p color="blue-gray">Update profile</p>
+          <p className="mb-3 font-normal" color="gray">
             Edit Username
           </p>
           <Input
@@ -76,6 +75,13 @@ const EditarPerfil = ({ open, setOpen, user, setUser }) => {
       </Card>
     </Dialog>
   );
+};
+
+EditarPerfil.propTypes = {
+  open: PropTypes.bool.isRequired,
+  setOpen: PropTypes.func.isRequired,
+  user: PropTypes.object.isRequired,
+  setUser: PropTypes.func.isRequired,
 };
 
 export default EditarPerfil;
